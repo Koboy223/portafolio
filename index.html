@@ -22,6 +22,12 @@
             overflow-y: auto;
             padding-bottom: 70px;
         }
+        .section {
+            display: none;
+        }
+        .section.active {
+            display: block;
+        }
         .nav-menu {
             background-color: #e91e63;
             padding: 10px 0;
@@ -83,8 +89,44 @@
     </style>
 </head>
 <body>
-    <div class="content" id="content">
-        <!-- El contenido se llenará con JavaScript -->
+    <div class="content">
+        <div id="home" class="section active">
+            <h1>Bienvenidos a mi portafolio</h1>
+            <p>Hola, soy [Tu Nombre]. Soy una diseñadora y desarrolladora web apasionada por crear experiencias digitales únicas y atractivas.</p>
+            <p>Explora mi portafolio para ver mis proyectos y conocer más sobre mí.</p>
+        </div>
+        <div id="about" class="section">
+            <h2>Sobre mí</h2>
+            <p>Soy una diseñadora y desarrolladora web con [X] años de experiencia. Me especializo en:</p>
+            <ul>
+                <li>Diseño UI/UX</li>
+                <li>Desarrollo front-end</li>
+                <li>Diseño responsivo</li>
+            </ul>
+            <p>Mi objetivo es crear sitios web hermosos y funcionales que proporcionen una excelente experiencia de usuario.</p>
+        </div>
+        <div id="projects" class="section">
+            <h2>Mis Proyectos</h2>
+            <div class="project-card">
+                <h3>Proyecto 1</h3>
+                <p>Una aplicación web para gestión de tareas. Utilicé React para el frontend y Node.js para el backend.</p>
+            </div>
+            <div class="project-card">
+                <h3>Proyecto 2</h3>
+                <p>Rediseño de la página web de una tienda local. Mejoré la experiencia de usuario y aumenté las conversiones en un 30%.</p>
+            </div>
+            <div class="project-card">
+                <h3>Proyecto 3</h3>
+                <p>Una aplicación móvil para seguimiento de hábitos. Desarrollada con React Native para iOS y Android.</p>
+            </div>
+        </div>
+        <div id="contact" class="section">
+            <h2>Contacto</h2>
+            <p>Me encantaría escuchar sobre tu proyecto. Contáctame a través de:</p>
+            <p>Email: <a href="mailto:tu.email@ejemplo.com">tu.email@ejemplo.com</a></p>
+            <p>LinkedIn: <a href="https://www.linkedin.com/in/tu-perfil" target="_blank">linkedin.com/in/tu-perfil</a></p>
+            <p>GitHub: <a href="https://github.com/tu-usuario" target="_blank">github.com/tu-usuario</a></p>
+        </div>
     </div>
     <button id="dark-mode-toggle">
         <i class="fas fa-moon"></i>
@@ -99,71 +141,20 @@
     </nav>
 
     <script>
-        const content = document.getElementById('content');
+        const sections = document.querySelectorAll('.section');
         const navItems = document.querySelectorAll('.nav-menu li');
         const darkModeToggle = document.getElementById('dark-mode-toggle');
         let isDarkMode = false;
 
-        function getHomeContent() {
-            return `
-                <h1>Bienvenidos a mi portafolio</h1>
-                <p>Hola, soy [Tu Nombre]. Soy una diseñadora y desarrolladora web apasionada por crear experiencias digitales únicas y atractivas.</p>
-                <p>Explora mi portafolio para ver mis proyectos y conocer más sobre mí.</p>
-            `;
+        function showSection(tab) {
+            sections.forEach(section => section.classList.remove('active'));
+            document.getElementById(tab).classList.add('active');
         }
-
-        function getAboutContent() {
-            return `
-                <h2>Sobre mí</h2>
-                <p>Soy una diseñadora y desarrolladora web con [X] años de experiencia. Me especializo en:</p>
-                <ul>
-                    <li>Diseño UI/UX</li>
-                    <li>Desarrollo front-end</li>
-                    <li>Diseño responsivo</li>
-                </ul>
-                <p>Mi objetivo es crear sitios web hermosos y funcionales que proporcionen una excelente experiencia de usuario.</p>
-            `;
-        }
-
-        function getProjectsContent() {
-            return `
-                <h2>Mis Proyectos</h2>
-                <div class="project-card">
-                    <h3>Proyecto 1</h3>
-                    <p>Una aplicación web para gestión de tareas. Utilicé React para el frontend y Node.js para el backend.</p>
-                </div>
-                <div class="project-card">
-                    <h3>Proyecto 2</h3>
-                    <p>Rediseño de la página web de una tienda local. Mejoré la experiencia de usuario y aumenté las conversiones en un 30%.</p>
-                </div>
-                <div class="project-card">
-                    <h3>Proyecto 3</h3>
-                    <p>Una aplicación móvil para seguimiento de hábitos. Desarrollada con React Native para iOS y Android.</p>
-                </div>
-            `;
-        }
-
-        function getContactContent() {
-            return `
-                <h2>Contacto</h2>
-                <p>Me encantaría escuchar sobre tu proyecto. Contáctame a través de:</p>
-                <p>Email: <a href="mailto:tu.email@ejemplo.com">tu.email@ejemplo.com</a></p>
-                <p>LinkedIn: <a href="https://www.linkedin.com/in/tu-perfil" target="_blank">linkedin.com/in/tu-perfil</a></p>
-                <p>GitHub: <a href="https://github.com/tu-usuario" target="_blank">github.com/tu-usuario</a></p>
-            `;
-        }
-
-        const tabContents = {
-            home: getHomeContent,
-            about: getAboutContent,
-            projects: getProjectsContent,
-            contact: getContactContent
-        };
 
         function setActiveTab(tab) {
             navItems.forEach(item => item.classList.remove('active'));
             document.querySelector(`[data-tab="${tab}"]`).classList.add('active');
-            content.innerHTML = tabContents[tab]();
+            showSection(tab);
         }
 
         navItems.forEach(item => {
