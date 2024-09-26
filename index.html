@@ -1,0 +1,183 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Mi Portafolio Personal</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 0;
+            display: flex;
+            flex-direction: column;
+            min-height: 100vh;
+            transition: background-color 0.3s, color 0.3s;
+        }
+        .content {
+            flex-grow: 1;
+            padding: 20px;
+            text-align: center;
+            overflow-y: auto;
+            padding-bottom: 70px;
+        }
+        .nav-menu {
+            background-color: #e91e63;
+            padding: 10px 0;
+            position: fixed;
+            bottom: 0;
+            width: 100%;
+        }
+        .nav-menu ul {
+            list-style-type: none;
+            padding: 0;
+            margin: 0;
+            display: flex;
+            justify-content: space-around;
+        }
+        .nav-menu li {
+            cursor: pointer;
+            padding: 10px;
+            color: white;
+        }
+        .nav-menu li.active {
+            background-color: #c2185b;
+        }
+        #dark-mode-toggle {
+            position: fixed;
+            bottom: 70px;
+            right: 20px;
+            background-color: #f8bbd0;
+            border: none;
+            border-radius: 50%;
+            padding: 10px;
+            cursor: pointer;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.2);
+        }
+        body.dark-mode {
+            background-color: #121212;
+            color: white;
+        }
+        body.dark-mode .nav-menu {
+            background-color: #333;
+        }
+        body.dark-mode .nav-menu li.active {
+            background-color: #555;
+        }
+        body.dark-mode #dark-mode-toggle {
+            background-color: #555;
+            color: white;
+        }
+        .project-card {
+            border: 1px solid #ddd;
+            border-radius: 8px;
+            padding: 15px;
+            margin-bottom: 15px;
+            transition: background-color 0.3s;
+        }
+        body.dark-mode .project-card {
+            border-color: #555;
+            background-color: #2a2a2a;
+        }
+    </style>
+</head>
+<body>
+    <div class="content" id="content">
+        <!-- El contenido se llenará con JavaScript -->
+    </div>
+    <button id="dark-mode-toggle">
+        <i class="fas fa-moon"></i>
+    </button>
+    <nav class="nav-menu">
+        <ul>
+            <li data-tab="home" class="active"><i class="fas fa-home"></i></li>
+            <li data-tab="about"><i class="fas fa-user"></i></li>
+            <li data-tab="projects"><i class="fas fa-briefcase"></i></li>
+            <li data-tab="contact"><i class="fas fa-envelope"></i></li>
+        </ul>
+    </nav>
+
+    <script>
+        const content = document.getElementById('content');
+        const navItems = document.querySelectorAll('.nav-menu li');
+        const darkModeToggle = document.getElementById('dark-mode-toggle');
+        let isDarkMode = false;
+
+        function getHomeContent() {
+            return `
+                <h1>Bienvenidos a mi portafolio</h1>
+                <p>Hola, soy [Tu Nombre]. Soy una diseñadora y desarrolladora web apasionada por crear experiencias digitales únicas y atractivas.</p>
+                <p>Explora mi portafolio para ver mis proyectos y conocer más sobre mí.</p>
+            `;
+        }
+
+        function getAboutContent() {
+            return `
+                <h2>Sobre mí</h2>
+                <p>Soy una diseñadora y desarrolladora web con [X] años de experiencia. Me especializo en:</p>
+                <ul>
+                    <li>Diseño UI/UX</li>
+                    <li>Desarrollo front-end</li>
+                    <li>Diseño responsivo</li>
+                </ul>
+                <p>Mi objetivo es crear sitios web hermosos y funcionales que proporcionen una excelente experiencia de usuario.</p>
+            `;
+        }
+
+        function getProjectsContent() {
+            return `
+                <h2>Mis Proyectos</h2>
+                <div class="project-card">
+                    <h3>Proyecto 1</h3>
+                    <p>Una aplicación web para gestión de tareas. Utilicé React para el frontend y Node.js para el backend.</p>
+                </div>
+                <div class="project-card">
+                    <h3>Proyecto 2</h3>
+                    <p>Rediseño de la página web de una tienda local. Mejoré la experiencia de usuario y aumenté las conversiones en un 30%.</p>
+                </div>
+                <div class="project-card">
+                    <h3>Proyecto 3</h3>
+                    <p>Una aplicación móvil para seguimiento de hábitos. Desarrollada con React Native para iOS y Android.</p>
+                </div>
+            `;
+        }
+
+        function getContactContent() {
+            return `
+                <h2>Contacto</h2>
+                <p>Me encantaría escuchar sobre tu proyecto. Contáctame a través de:</p>
+                <p>Email: <a href="mailto:tu.email@ejemplo.com">tu.email@ejemplo.com</a></p>
+                <p>LinkedIn: <a href="https://www.linkedin.com/in/tu-perfil" target="_blank">linkedin.com/in/tu-perfil</a></p>
+                <p>GitHub: <a href="https://github.com/tu-usuario" target="_blank">github.com/tu-usuario</a></p>
+            `;
+        }
+
+        const tabContents = {
+            home: getHomeContent,
+            about: getAboutContent,
+            projects: getProjectsContent,
+            contact: getContactContent
+        };
+
+        function setActiveTab(tab) {
+            navItems.forEach(item => item.classList.remove('active'));
+            document.querySelector(`[data-tab="${tab}"]`).classList.add('active');
+            content.innerHTML = tabContents[tab]();
+        }
+
+        navItems.forEach(item => {
+            item.addEventListener('click', () => setActiveTab(item.getAttribute('data-tab')));
+        });
+
+        darkModeToggle.addEventListener('click', () => {
+            isDarkMode = !isDarkMode;
+            document.body.classList.toggle('dark-mode', isDarkMode);
+            darkModeToggle.innerHTML = isDarkMode ? '<i class="fas fa-sun"></i>' : '<i class="fas fa-moon"></i>';
+        });
+
+        // Inicializar con la pestaña "home"
+        setActiveTab('home');
+    </script>
+</body>
+</html>
