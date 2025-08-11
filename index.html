@@ -3,177 +3,1137 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Mi Portafolio Personal</title>
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <title>Quiz: Pastas Frescas - Cronometrado</title>
     <style>
-        body {
-            font-family: Arial, sans-serif;
+        * {
             margin: 0;
             padding: 0;
-            display: flex;
-            flex-direction: column;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Arial', sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
             min-height: 100vh;
-            transition: background-color 0.3s, color 0.3s;
-        }
-        .content {
-            flex-grow: 1;
+            display: flex;
+            justify-content: center;
+            align-items: center;
             padding: 20px;
-            text-align: center;
-            overflow-y: auto;
-            padding-bottom: 70px;
         }
-        .section {
+
+        .quiz-container {
+            background: rgba(255, 255, 255, 0.95);
+            border-radius: 20px;
+            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.1);
+            max-width: 900px;
+            width: 100%;
+            padding: 40px;
+            backdrop-filter: blur(10px);
+            animation: fadeIn 0.8s ease-out;
+        }
+
+        @keyframes fadeIn {
+            from {
+                opacity: 0;
+                transform: translateY(30px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .quiz-header {
+            text-align: center;
+            margin-bottom: 30px;
+        }
+
+        .quiz-title {
+            color: #2c3e50;
+            font-size: 2.5rem;
+            margin-bottom: 10px;
+            text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.1);
+        }
+
+        .quiz-subtitle {
+            color: #7f8c8d;
+            font-size: 1.2rem;
+            font-weight: 300;
+        }
+
+        .timer-container {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            margin: 20px 0;
+            gap: 20px;
+        }
+
+        .timer {
+            background: linear-gradient(135deg, #e74c3c, #c0392b);
+            color: white;
+            padding: 15px 25px;
+            border-radius: 50px;
+            font-size: 1.5rem;
+            font-weight: bold;
+            box-shadow: 0 4px 15px rgba(231, 76, 60, 0.3);
+            animation: pulse 1s infinite;
+        }
+
+        .timer.warning {
+            animation: shake 0.5s infinite;
+            background: linear-gradient(135deg, #f39c12, #e67e22);
+        }
+
+        @keyframes pulse {
+            0% { transform: scale(1); }
+            50% { transform: scale(1.05); }
+            100% { transform: scale(1); }
+        }
+
+        @keyframes shake {
+            0%, 100% { transform: translateX(0); }
+            25% { transform: translateX(-3px); }
+            75% { transform: translateX(3px); }
+        }
+
+        .audio-controls {
+            display: flex;
+            gap: 10px;
+            align-items: center;
+        }
+
+        .audio-btn {
+            background: linear-gradient(135deg, #9b59b6, #8e44ad);
+            color: white;
+            border: none;
+            padding: 10px 15px;
+            border-radius: 25px;
+            cursor: pointer;
+            font-size: 0.9rem;
+            transition: all 0.3s ease;
+        }
+
+        .audio-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 4px 12px rgba(155, 89, 182, 0.3);
+        }
+
+        .progress-bar {
+            width: 100%;
+            height: 8px;
+            background: #ecf0f1;
+            border-radius: 10px;
+            margin: 20px 0;
+            overflow: hidden;
+        }
+
+        .progress-fill {
+            height: 100%;
+            background: linear-gradient(90deg, #3498db, #2ecc71);
+            border-radius: 10px;
+            transition: width 0.5s ease;
+        }
+
+        .question-container {
+            background: #f8f9fa;
+            border-radius: 15px;
+            padding: 25px;
+            margin: 20px 0;
+            border-left: 5px solid #3498db;
+            animation: slideIn 0.5s ease-out;
+        }
+
+        @keyframes slideIn {
+            from {
+                opacity: 0;
+                transform: translateX(-20px);
+            }
+            to {
+                opacity: 1;
+                transform: translateX(0);
+            }
+        }
+
+        .question-number {
+            color: #3498db;
+            font-weight: bold;
+            font-size: 0.9rem;
+            margin-bottom: 10px;
+        }
+
+        .question-text {
+            font-size: 1.3rem;
+            color: #2c3e50;
+            margin-bottom: 20px;
+            font-weight: 500;
+            line-height: 1.4;
+        }
+
+        .options-container {
+            display: grid;
+            gap: 12px;
+        }
+
+        .option {
+            background: white;
+            border: 2px solid #e1e8ed;
+            border-radius: 12px;
+            padding: 15px 20px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            font-size: 1rem;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .option::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: -100%;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.2), transparent);
+            transition: left 0.5s;
+        }
+
+        .option:hover {
+            border-color: #3498db;
+            transform: translateY(-2px);
+            box-shadow: 0 4px 12px rgba(52, 152, 219, 0.2);
+        }
+
+        .option:hover::before {
+            left: 100%;
+        }
+
+        .option.selected {
+            border-color: #3498db;
+            background: linear-gradient(135deg, #3498db, #2980b9);
+            color: white;
+            transform: scale(1.02);
+        }
+
+        .option.correct {
+            border-color: #27ae60;
+            background: linear-gradient(135deg, #27ae60, #2ecc71);
+            color: white;
+            animation: correctPulse 0.5s;
+        }
+
+        .option.incorrect {
+            border-color: #e74c3c;
+            background: linear-gradient(135deg, #e74c3c, #c0392b);
+            color: white;
+            animation: incorrectShake 0.5s;
+        }
+
+        .option.disabled {
+            pointer-events: none;
+            opacity: 0.6;
+        }
+
+        @keyframes correctPulse {
+            0% { transform: scale(1); }
+            50% { transform: scale(1.05); }
+            100% { transform: scale(1); }
+        }
+
+        @keyframes incorrectShake {
+            0%, 100% { transform: translateX(0); }
+            25% { transform: translateX(-5px); }
+            75% { transform: translateX(5px); }
+        }
+
+        .controls {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-top: 30px;
+            flex-wrap: wrap;
+            gap: 15px;
+        }
+
+        .btn {
+            background: linear-gradient(135deg, #3498db, #2980b9);
+            color: white;
+            border: none;
+            padding: 12px 25px;
+            border-radius: 25px;
+            cursor: pointer;
+            font-size: 1rem;
+            font-weight: 500;
+            transition: all 0.3s ease;
+            box-shadow: 0 4px 15px rgba(52, 152, 219, 0.3);
+        }
+
+        .btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 20px rgba(52, 152, 219, 0.4);
+        }
+
+        .btn:disabled {
+            background: #bdc3c7;
+            cursor: not-allowed;
+            transform: none;
+            box-shadow: none;
+        }
+
+        .score-display {
+            background: linear-gradient(135deg, #f39c12, #e67e22);
+            color: white;
+            padding: 10px 20px;
+            border-radius: 20px;
+            font-weight: bold;
+            font-size: 1.1rem;
+            box-shadow: 0 4px 15px rgba(243, 156, 18, 0.3);
+        }
+
+        .results-container {
+            text-align: center;
+            background: linear-gradient(135deg, #2c3e50, #34495e);
+            color: white;
+            border-radius: 20px;
+            padding: 40px;
+            margin-top: 20px;
+        }
+
+        .final-score {
+            font-size: 3rem;
+            margin: 20px 0;
+            text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.3);
+        }
+
+        .performance-message {
+            font-size: 1.3rem;
+            margin: 20px 0;
+            font-weight: 300;
+        }
+
+        .restart-btn {
+            background: linear-gradient(135deg, #e74c3c, #c0392b);
+            margin-top: 20px;
+            padding: 15px 30px;
+            font-size: 1.1rem;
+        }
+
+        .explanation {
+            background: #fff3cd;
+            border: 1px solid #ffeaa7;
+            border-radius: 10px;
+            padding: 15px;
+            margin-top: 15px;
+            font-size: 0.95rem;
+            color: #856404;
             display: none;
         }
-        .section.active {
+
+        .explanation.show {
             display: block;
+            animation: fadeIn 0.5s ease-out;
         }
-        .nav-menu {
-            background-color: #e91e63;
-            padding: 10px 0;
-            position: fixed;
-            bottom: 0;
-            width: 100%;
-        }
-        .nav-menu ul {
-            list-style-type: none;
-            padding: 0;
-            margin: 0;
-            display: flex;
-            justify-content: space-around;
-        }
-        .nav-menu li {
-            cursor: pointer;
-            padding: 10px;
+
+        .time-up {
+            background: linear-gradient(135deg, #e74c3c, #c0392b);
             color: white;
-        }
-        .nav-menu li.active {
-            background-color: #c2185b;
-        }
-        #dark-mode-toggle {
-            position: fixed;
-            bottom: 70px;
-            right: 20px;
-            background-color: #f8bbd0;
-            border: none;
-            border-radius: 50%;
-            padding: 10px;
-            cursor: pointer;
-            box-shadow: 0 2px 5px rgba(0,0,0,0.2);
-        }
-        body.dark-mode {
-            background-color: #121212;
-            color: white;
-        }
-        body.dark-mode .nav-menu {
-            background-color: #333;
-        }
-        body.dark-mode .nav-menu li.active {
-            background-color: #555;
-        }
-        body.dark-mode #dark-mode-toggle {
-            background-color: #555;
-            color: white;
-        }
-        .project-card {
-            border: 1px solid #ddd;
-            border-radius: 8px;
-            padding: 15px;
-            margin-bottom: 15px;
-            transition: background-color 0.3s;
-        }
-        body.dark-mode .project-card {
-            border-color: #555;
-            background-color: #2a2a2a;
-        }
-        span{
-            font-style: italic;
+            padding: 20px;
+            border-radius: 15px;
+            text-align: center;
+            font-size: 1.2rem;
             font-weight: bold;
-            color: #c2185b;
+            margin: 15px 0;
+            animation: flashRed 0.5s;
+        }
+
+        @keyframes flashRed {
+            0%, 100% { opacity: 1; }
+            50% { opacity: 0.5; }
+        }
+
+        /* Tablets y dispositivos medianos */
+        @media (max-width: 1024px) {
+            .quiz-container {
+                max-width: 95%;
+                padding: 30px;
+            }
+            
+            .quiz-title {
+                font-size: 2.2rem;
+            }
+            
+            .question-text {
+                font-size: 1.2rem;
+            }
+        }
+
+        /* Tablets pequeñas */
+        @media (max-width: 768px) {
+            body {
+                padding: 10px;
+            }
+            
+            .quiz-container {
+                padding: 25px;
+                margin: 5px;
+                border-radius: 15px;
+            }
+            
+            .quiz-title {
+                font-size: 2rem;
+                margin-bottom: 8px;
+            }
+            
+            .quiz-subtitle {
+                font-size: 1rem;
+            }
+            
+            .timer {
+                padding: 12px 20px;
+                font-size: 1.3rem;
+            }
+            
+            .question-text {
+                font-size: 1.1rem;
+                margin-bottom: 15px;
+            }
+            
+            .option {
+                padding: 12px 15px;
+                font-size: 0.95rem;
+            }
+            
+            .controls {
+                flex-direction: column;
+                gap: 10px;
+            }
+            
+            .btn {
+                width: 100%;
+                padding: 15px;
+                font-size: 1.1rem;
+            }
+            
+            .score-display {
+                text-align: center;
+                width: 100%;
+            }
+        }
+
+        /* Móviles */
+        @media (max-width: 600px) {
+            body {
+                padding: 5px;
+                align-items: flex-start;
+                padding-top: 20px;
+            }
+            
+            .quiz-container {
+                padding: 20px;
+                margin: 0;
+                border-radius: 12px;
+                min-height: calc(100vh - 40px);
+            }
+            
+            .quiz-title {
+                font-size: 1.8rem;
+                line-height: 1.2;
+            }
+            
+            .quiz-subtitle {
+                font-size: 0.9rem;
+            }
+            
+            .timer-container {
+                flex-direction: column;
+                gap: 10px;
+                margin: 15px 0;
+            }
+            
+            .timer {
+                padding: 10px 18px;
+                font-size: 1.2rem;
+            }
+            
+            .audio-controls {
+                justify-content: center;
+                flex-wrap: wrap;
+            }
+            
+            .audio-btn {
+                padding: 8px 12px;
+                font-size: 0.8rem;
+            }
+            
+            .question-container {
+                padding: 20px;
+                margin: 15px 0;
+            }
+            
+            .question-number {
+                font-size: 0.8rem;
+                margin-bottom: 8px;
+            }
+            
+            .question-text {
+                font-size: 1rem;
+                line-height: 1.3;
+                margin-bottom: 15px;
+            }
+            
+            .options-container {
+                gap: 10px;
+            }
+            
+            .option {
+                padding: 12px 15px;
+                font-size: 0.9rem;
+                border-radius: 10px;
+            }
+            
+            .explanation {
+                padding: 12px;
+                font-size: 0.85rem;
+                margin-top: 12px;
+            }
+            
+            .time-up {
+                padding: 15px;
+                font-size: 1rem;
+                margin: 10px 0;
+            }
+            
+            .controls {
+                margin-top: 20px;
+            }
+            
+            .score-display {
+                padding: 8px 15px;
+                font-size: 1rem;
+            }
+            
+            .btn {
+                padding: 12px;
+                font-size: 1rem;
+                border-radius: 20px;
+            }
+            
+            .results-container {
+                padding: 30px 20px;
+                margin-top: 15px;
+            }
+            
+            .final-score {
+                font-size: 2.5rem;
+                margin: 15px 0;
+            }
+            
+            .performance-message {
+                font-size: 1.1rem;
+                margin: 15px 0;
+                line-height: 1.3;
+            }
+            
+            .restart-btn {
+                padding: 12px 25px;
+                font-size: 1rem;
+                margin-top: 15px;
+            }
+        }
+
+        /* Móviles muy pequeños */
+        @media (max-width: 375px) {
+            .quiz-container {
+                padding: 15px;
+            }
+            
+            .quiz-title {
+                font-size: 1.6rem;
+            }
+            
+            .timer {
+                padding: 8px 15px;
+                font-size: 1.1rem;
+            }
+            
+            .question-container {
+                padding: 15px;
+            }
+            
+            .question-text {
+                font-size: 0.95rem;
+            }
+            
+            .option {
+                padding: 10px 12px;
+                font-size: 0.85rem;
+            }
+            
+            .final-score {
+                font-size: 2rem;
+            }
+        }
+
+        /* Landscape orientation para móviles */
+        @media (max-height: 500px) and (orientation: landscape) {
+            body {
+                align-items: flex-start;
+                padding-top: 10px;
+            }
+            
+            .quiz-container {
+                min-height: auto;
+                max-height: calc(100vh - 20px);
+                overflow-y: auto;
+            }
+            
+            .quiz-header {
+                margin-bottom: 15px;
+            }
+            
+            .quiz-title {
+                font-size: 1.5rem;
+                margin-bottom: 5px;
+            }
+            
+            .quiz-subtitle {
+                font-size: 0.8rem;
+            }
+            
+            .timer-container {
+                margin: 10px 0;
+            }
+            
+            .timer {
+                padding: 6px 12px;
+                font-size: 1rem;
+            }
+            
+            .question-container {
+                padding: 15px;
+                margin: 10px 0;
+            }
+            
+            .question-text {
+                font-size: 0.9rem;
+                margin-bottom: 10px;
+            }
+            
+            .option {
+                padding: 8px 12px;
+                font-size: 0.8rem;
+            }
+            
+            .controls {
+                margin-top: 15px;
+            }
+        }
+
+        /* Mejoras para accesibilidad en pantallas pequeñas */
+        @media (max-width: 480px) {
+            .option:hover {
+                transform: none; /* Evitar efectos hover en móviles */
+            }
+            
+            .option:active {
+                transform: scale(0.98);
+                background-color: #f0f0f0;
+            }
+            
+            /* Aumentar área de toque */
+            .btn, .option, .audio-btn {
+                min-height: 44px; /* Estándar iOS/Android para área de toque */
+            }
+            
+            /* Mejorar legibilidad */
+            .question-text, .option {
+                line-height: 1.4;
+            }
+        }
+
+        /* Dark mode support para dispositivos que lo prefieran */
+        @media (prefers-color-scheme: dark) {
+            .quiz-container {
+                background: rgba(45, 55, 72, 0.95);
+                color: #e2e8f0;
+            }
+            
+            .question-container {
+                background: #4a5568;
+                border-left-color: #63b3ed;
+            }
+            
+            .option {
+                background: #2d3748;
+                border-color: #4a5568;
+                color: #e2e8f0;
+            }
+            
+            .explanation {
+                background: #744210;
+                border-color: #d69e2e;
+                color: #faf089;
+            }
         }
     </style>
 </head>
 <body>
-    <div class="content">
-        <div id="home" class="section active">
-            <h1>Bienvenidos a mi portafolio</h1>
-            <p>Hola, soy ejemplo: mayte. soy una artista diguital  <span> y otaku fan de el anime😂 😂 😂 😂 😂 😂 😂 😂 </span>  en progreso de creacion de un manga</p>
-            <p>Explora mi portafolio para ver mis proyectos y conocer más sobre mí.</p>
+    <div class="quiz-container">
+        <div class="quiz-header">
+            <h1 class="quiz-title">🍝 Quiz de Pastas - Cronometrado</h1>
+            <p class="quiz-subtitle">25 preguntas - 10 segundos cada una</p>
         </div>
-        <div id="about" class="section">
-            <h2>Sobre mí</h2>
-            <p>Soy una diseñadora y desarrolladora web con [X] años de experiencia. Me especializo en:</p>
-            <ul>
-                <li>Diseño UI/UX</li>
-                <li>Desarrollo front-end</li>
-                <li>Diseño responsivo</li>
-            </ul>
-            <p>Mi objetivo es crear sitios web hermosos y funcionales que proporcionen una excelente experiencia de usuario.</p>
-        </div>
-        <div id="projects" class="section">
-            <h2>Mis Proyectos</h2>
-            <div class="project-card">
-                <h3>Proyecto 1</h3>
-                <p>Una aplicación web para gestión de tareas. Utilicé React para el frontend y Node.js para el backend.</p>
-            </div>
-            <div class="project-card">
-                <h3>Proyecto 2</h3>
-                <p>Rediseño de la página web de una tienda local. Mejoré la experiencia de usuario y aumenté las conversiones en un 30%.</p>
-            </div>
-            <div class="project-card">
-                <h3>Proyecto 3</h3>
-                <p>Una aplicación móvil para seguimiento de hábitos. Desarrollada con React Native para iOS y Android.</p>
+
+        <div class="timer-container">
+            <div class="timer" id="timer">10</div>
+            <div class="audio-controls">
+                <button class="audio-btn" id="muteBtn" onclick="toggleMute()">🔊 Audio</button>
+                <button class="audio-btn" onclick="playTickSound()">🎵 Test</button>
             </div>
         </div>
-        <div id="contact" class="section">
-            <h2>Contacto</h2>
-            <p>Me encantaría escuchar sobre tu proyecto. Contáctame a través de:</p>
-            <p>Email: <a href="mailto:tu.email@ejemplo.com">tu.email@ejemplo.com</a></p>
-            <p>LinkedIn: <a href="https://www.linkedin.com/in/tu-perfil" target="_blank">linkedin.com/in/tu-perfil</a></p>
-            <p>GitHub: <a href="https://github.com/tu-usuario" target="_blank">github.com/tu-usuario</a></p>
+
+        <div class="progress-bar">
+            <div class="progress-fill" id="progressFill"></div>
+        </div>
+
+        <div id="quizContent">
+            <div class="question-container" id="questionContainer">
+                <div class="question-number" id="questionNumber">Pregunta 1 de 25</div>
+                <div class="question-text" id="questionText"></div>
+                <div class="options-container" id="optionsContainer"></div>
+                <div class="explanation" id="explanation"></div>
+                <div id="timeUpMessage" class="time-up" style="display: none;">
+                    ⏰ ¡Tiempo agotado! La respuesta correcta se mostrará en verde.
+                </div>
+            </div>
+
+            <div class="controls">
+                <div class="score-display" id="scoreDisplay">Puntuación: 0/0</div>
+                <button class="btn" id="nextBtn" onclick="nextQuestion()" disabled>Siguiente</button>
+            </div>
+        </div>
+
+        <div id="resultsContainer" class="results-container" style="display: none;">
+            <h2>¡Quiz Completado! 🎉</h2>
+            <div class="final-score" id="finalScore"></div>
+            <div class="performance-message" id="performanceMessage"></div>
+            <button class="btn restart-btn" onclick="restartQuiz()">Reiniciar Quiz</button>
         </div>
     </div>
-    <button id="dark-mode-toggle">
-        <i class="fas fa-moon"></i>
-    </button>
-    <nav class="nav-menu">
-        <ul>
-            <li data-tab="home" class="active"><i class="fas fa-home"></i></li>
-            <li data-tab="about"><i class="fas fa-user"></i></li>
-            <li data-tab="projects"><i class="fas fa-briefcase"></i></li>
-            <li data-tab="contact"><i class="fas fa-envelope"></i></li>
-        </ul>
-    </nav>
+
+    <!-- Tone.js para audio -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/tone/14.8.49/Tone.js"></script>
 
     <script>
-        const sections = document.querySelectorAll('.section');
-        const navItems = document.querySelectorAll('.nav-menu li');
-        const darkModeToggle = document.getElementById('dark-mode-toggle');
-        let isDarkMode = false;
+        const questions = [
+            {
+                question: "Según el documento, ¿dónde tuvo lugar la primera producción de fideos?",
+                options: ["Italia", "China", "Oriente Medio", "Asia en general"],
+                correct: 1,
+                explanation: "Según Houyuan Lu de la Academia de Ciencias de China: 'Esta investigación ha demostrado que la primera producción de fideos tuvo lugar en China.'"
+            },
+            {
+                question: "¿Cuáles son los ingredientes principales de la pasta fresca?",
+                options: ["Sémola de trigo y agua", "Harina de trigo, huevos y sal", "Harina, agua y aceite", "Trigo duro y sal"],
+                correct: 1,
+                explanation: "La pasta fresca se elabora de modo artesanal con harina de trigo, huevos y sal."
+            },
+            {
+                question: "¿Qué significa la expresión italiana 'al dente'?",
+                options: ["Que la pasta esté muy blanda", "Que esté crujiente por fuera", "Que al morder se encuentre el exterior blando y el interior duro", "Que esté completamente cocida"],
+                correct: 2,
+                explanation: "Al dente significa que al morder un trozo de pasta se debe encontrar el exterior blando y el interior duro, presentando una leve resistencia al morder."
+            },
+            {
+                question: "¿Cuántas partes de agua se recomienda usar por cada 500 gramos de pasta?",
+                options: ["2 partes", "3 partes", "4 partes", "5 partes"],
+                correct: 2,
+                explanation: "Como guía aproximadamente se debe contar 4 partes de agua y una cucharada de sal por cada 500 gramos de pasta."
+            },
+            {
+                question: "¿Qué son las pastas compuestas según su composición?",
+                options: ["Pastas con ingredientes básicos solamente", "Pastas que incluyen algún ingrediente además de los básicos", "Pastas rellenas con carne", "Pastas secas deshidratadas"],
+                correct: 1,
+                explanation: "Las pastas compuestas son aquellas que incluyen en su composición algún otro ingrediente además de los básicos (adición de gluten, soja, huevos, leche)."
+            },
+            {
+                question: "¿Qué tipo de pasta son los canelones y la lasagna según su forma?",
+                options: ["Pastas cortas", "Pastas largas", "Pastas planas", "Pastas simples"],
+                correct: 2,
+                explanation: "Los canelones y la lasagna se clasifican como pastas planas según su forma."
+            },
+            {
+                question: "¿Cuál es el ingrediente principal del ñoqui tradicional?",
+                options: ["Ricotta", "Sémola", "Pan rallado", "Puré de patata"],
+                correct: 3,
+                explanation: "El ñoqui tradicional es una mezcla de puré de patata con harina y queso parmesano."
+            },
+            {
+                question: "¿Qué sucede con las pastas si están demasiado cocidas?",
+                options: ["Se vuelven más nutritivas", "Pierden consistencia y su digestión es más lenta", "Absorben mejor las salsas", "Se conservan mejor"],
+                correct: 1,
+                explanation: "Si las pastas están demasiado cocidas, pierden consistencia, su sabor no se fusiona tan fácilmente con las salsas y la digestión resulta más lenta."
+            },
+            {
+                question: "¿Cómo se llaman los ñoquis que se hacen con pan rallado?",
+                options: ["Gnocchi di pane", "Gnocchi alla romana", "Gnocchi di ricotta", "Gnocchi tradizionale"],
+                correct: 0,
+                explanation: "Los gnocchi di pane son una variedad que se hace con pan rallado, conocida en las regiones de Friuli y Trentino-Alto Adigio."
+            },
+            {
+                question: "¿Por qué es importante consumir la pasta inmediatamente después de su preparación?",
+                options: ["Por su mejor sabor únicamente", "Para garantizar su seguridad y mantener condiciones organolépticas óptimas", "Para ahorrar energía", "Para que no se enfríe"],
+                correct: 1,
+                explanation: "Es importante consumir la pasta inmediatamente para garantizar su seguridad alimentaria y mantener las condiciones organolépticas óptimas."
+            },
+            {
+                question: "¿Cuál es la diferencia principal entre pasta fresca y pasta seca?",
+                options: ["El color", "La pasta fresca lleva huevos y la seca no", "El tiempo de conservación", "El país de origen"],
+                correct: 1,
+                explanation: "La pasta fresca se elabora con harina de trigo, huevos y sal, mientras que la pasta seca se elabora con sémola de trigo duro y agua."
+            },
+            {
+                question: "¿Qué contienen las pastas rellenas en su interior?",
+                options: ["Solo verduras", "Carnes, grasas, quesos, pescados, hortalizas, huevos y aromas", "Únicamente quesos", "Solo carnes"],
+                correct: 1,
+                explanation: "Las pastas rellenas contienen en su interior un preparado elaborado con: carnes, grasas animales, grasas vegetales, quesos, pescados, hortalizas, huevos y aromas."
+            },
+            {
+                question: "¿Qué ejemplos se mencionan de pastas cortas?",
+                options: ["Espagueti y tallarín", "Farfalle, ravioli, tortellini, fusilli", "Canelones y lasagna", "Solo estrellitas"],
+                correct: 1,
+                explanation: "Las pastas cortas incluyen figuradas como el farfalle, rellenas como el ravioli, tortellini, y otras espirales como el fusilli."
+            },
+            {
+                question: "¿Qué se debe hacer si se trata de pasta fresca rellena durante la cocción?",
+                options: ["Cocinar a fuego alto", "Bajar el fuego para que el agua no retome el hervor", "Añadir más sal", "Cocinar tapada"],
+                correct: 1,
+                explanation: "Si se trata de pasta fresca rellena, hay que bajar el fuego para que el agua no retome el hervor, si no se podrían abrir las piezas o romper."
+            },
+            {
+                question: "¿Qué tratamiento térmico elimina los microorganismos de la pasta?",
+                options: ["El refrigerado", "La congelación", "La cocción", "El secado"],
+                correct: 2,
+                explanation: "La cocción, o lo que es lo mismo, el tratamiento térmico de la pasta, elimina una parte muy significativa de los microorganismos que pudiera contener."
+            },
+            {
+                question: "¿Con qué se elaboran los ñoquis a la romana?",
+                options: ["Puré de patata", "Ricotta", "Sémola", "Pan rallado"],
+                correct: 2,
+                explanation: "Los ñoquis a la romana se hacen con sémola y tienen forma de discos gruesos."
+            },
+            {
+                question: "¿Qué características tiene la pasta fresca respecto al peso?",
+                options: ["Pesa menos que la seca", "Pesa más porque contiene agua", "Pesa igual que la seca", "Depende del tipo"],
+                correct: 1,
+                explanation: "A la hora de calcular las cantidades de pasta fresca hay que tener en cuenta que esta variedad contiene agua, por tanto pesa más y no se hincha tanto como la pasta seca."
+            },
+            {
+                question: "¿Qué ejemplos se dan de pastas largas?",
+                options: ["Farfalle y ravioli", "Espagueti, tallarín, fetuchini, tagliatelle", "Canelones y lasagna", "Estrellitas y puntos"],
+                correct: 1,
+                explanation: "Las pastas largas incluyen cilíndricas como el espagueti y planas como el tallarín, fetuchini, tagliatelle."
+            },
+            {
+                question: "¿Qué sucede con el recalentamiento de la pasta tras su refrigeración?",
+                options: ["Mejora su sabor", "Provoca la pérdida de hidratos de carbono", "La hace más nutritiva", "No tiene efectos"],
+                correct: 1,
+                explanation: "El recalentamiento de la pasta tras su refrigeración provoca la pérdida de hidratos de carbono y, por tanto, de parte de la energía que aporta al organismo."
+            },
+            {
+                question: "¿Qué características tienen las pastas simples según su composición?",
+                options: ["Tienen relleno", "Incluyen ingredientes adicionales", "Emplean ingredientes básicos, las de trigos duros son de calidad superior", "Son siempre secas"],
+                correct: 2,
+                explanation: "Las pastas simples son aquellas en las que se emplean los ingredientes básicos en su composición, las elaboradas con trigos duros son de calidad superior."
+            },
+            {
+                question: "¿Qué se debe hacer para evitar que la pasta se pegue después de colarla?",
+                options: ["Añadir mantequilla", "Refrescar con agua y añadir aceite de oliva", "Dejarla secar", "Añadir sal"],
+                correct: 1,
+                explanation: "Para evitar que se pegue, se refresca con un colador bajo el chorro de agua (choque térmico), se vierte en un bowl y se coloca aceite de oliva para evitar que se pegue."
+            },
+            {
+                question: "¿Qué ejemplos se mencionan de pastas simples por forma?",
+                options: ["Espagueti y tallarín", "Estrellitas, letritas, puntos y granitos de arroz", "Farfalle y fusilli", "Canelones y lasagna"],
+                correct: 1,
+                explanation: "Las pastas simples por forma incluyen estrellitas, letritas, puntos y granitos de arroz."
+            },
+            {
+                question: "¿Cuál es la característica principal de la dieta mediterránea mencionada?",
+                options: ["Está pasada de moda", "Está de moda y la pasta es uno de sus productos estrella", "Solo incluye pasta", "Es muy cara"],
+                correct: 1,
+                explanation: "La dieta mediterránea está de moda y uno de los productos estrella de ésta, y mundialmente conocido, es la pasta."
+            },
+            {
+                question: "¿En qué regiones de Italia son conocidos los gnocchi di pane?",
+                options: ["Sicilia y Calabria", "Friuli y Trentino-Alto Adigio", "Toscana y Umbría", "Lazio y Campania"],
+                correct: 1,
+                explanation: "Los gnocchi di pane son una variedad muy conocida en las regiones de Friuli (Venecia) y Trentino-Alto Adigio (Norte de Italia)."
+            },
+            {
+                question: "¿Qué aumenta proporcionalmente si se deja enfriar la pasta durante mucho tiempo?",
+                options: ["Su sabor", "Las posibilidades de recontaminación del alimento", "Su valor nutritivo", "Su textura"],
+                correct: 1,
+                explanation: "Si el tiempo de enfriamiento es excesivo, las posibilidades de recontaminación del alimento aumentan de forma proporcional, ya que la velocidad de reproducción de los microorganismos se incrementa exponencialmente."
+            }
+        ];
 
-        function showSection(tab) {
-            sections.forEach(section => section.classList.remove('active'));
-            document.getElementById(tab).classList.add('active');
+        let currentQuestion = 0;
+        let score = 0;
+        let timeLeft = 10;
+        let timer;
+        let answered = false;
+        let isMuted = false;
+        let synth;
+        let oscillator;
+
+        // Inicializar Tone.js
+        async function initAudio() {
+            if (Tone.context.state !== 'running') {
+                await Tone.start();
+            }
+            
+            synth = new Tone.Synth({
+                oscillator: {
+                    type: 'sine'
+                },
+                envelope: {
+                    attack: 0.1,
+                    decay: 0.2,
+                    sustain: 0.3,
+                    release: 0.4
+                }
+            }).toDestination();
         }
 
-        function setActiveTab(tab) {
-            navItems.forEach(item => item.classList.remove('active'));
-            document.querySelector(`[data-tab="${tab}"]`).classList.add('active');
-            showSection(tab);
+        function playTickSound() {
+            if (!isMuted && synth) {
+                synth.triggerAttackRelease('C4', '0.1');
+            }
         }
 
-        navItems.forEach(item => {
-            item.addEventListener('click', () => setActiveTab(item.getAttribute('data-tab')));
+        function playCorrectSound() {
+            if (!isMuted && synth) {
+                synth.triggerAttackRelease('C5', '0.3');
+                setTimeout(() => synth.triggerAttackRelease('E5', '0.3'), 150);
+                setTimeout(() => synth.triggerAttackRelease('G5', '0.3'), 300);
+            }
+        }
+
+        function playIncorrectSound() {
+            if (!isMuted && synth) {
+                synth.triggerAttackRelease('F3', '0.5');
+                setTimeout(() => synth.triggerAttackRelease('D3', '0.5'), 200);
+            }
+        }
+
+        function playTimeUpSound() {
+            if (!isMuted && synth) {
+                for (let i = 0; i < 3; i++) {
+                    setTimeout(() => synth.triggerAttackRelease('A3', '0.2'), i * 300);
+                }
+            }
+        }
+
+        function playWarningSound() {
+            if (!isMuted && synth && timeLeft <= 3) {
+                synth.triggerAttackRelease('G4', '0.1');
+            }
+        }
+
+        function toggleMute() {
+            isMuted = !isMuted;
+            document.getElementById('muteBtn').textContent = isMuted ? '🔇 Silencio' : '🔊 Audio';
+        }
+
+        function startTimer() {
+            timeLeft = 10;
+            updateTimerDisplay();
+            
+            timer = setInterval(() => {
+                timeLeft--;
+                updateTimerDisplay();
+                
+                if (timeLeft <= 3 && timeLeft > 0) {
+                    playWarningSound();
+                    document.getElementById('timer').classList.add('warning');
+                }
+                
+                if (timeLeft === 0) {
+                    clearInterval(timer);
+                    timeUp();
+                }
+            }, 1000);
+        }
+
+        function updateTimerDisplay() {
+            const timerElement = document.getElementById('timer');
+            timerElement.textContent = timeLeft;
+            
+            if (timeLeft > 3) {
+                timerElement.classList.remove('warning');
+            }
+        }
+
+        function timeUp() {
+            if (answered) return;
+            
+            playTimeUpSound();
+            answered = true;
+            
+            const question = questions[currentQuestion];
+            const options = document.querySelectorAll('.option');
+            
+            options.forEach((option, index) => {
+                option.classList.add('disabled');
+                if (index === question.correct) {
+                    option.classList.add('correct');
+                }
+            });
+            
+            document.getElementById('timeUpMessage').style.display = 'block';
+            document.getElementById('explanation').textContent = question.explanation;
+            document.getElementById('explanation').classList.add('show');
+            document.getElementById('nextBtn').disabled = false;
+            
+            updateScore();
+        }
+
+        function loadQuestion() {
+            const question = questions[currentQuestion];
+            document.getElementById('questionNumber').textContent = `Pregunta ${currentQuestion + 1} de ${questions.length}`;
+            document.getElementById('questionText').textContent = question.question;
+            
+            const optionsContainer = document.getElementById('optionsContainer');
+            optionsContainer.innerHTML = '';
+            
+            question.options.forEach((option, index) => {
+                const optionElement = document.createElement('div');
+                optionElement.className = 'option';
+                optionElement.textContent = option;
+                optionElement.onclick = () => selectOption(index);
+                optionsContainer.appendChild(optionElement);
+            });
+            
+            document.getElementById('explanation').classList.remove('show');
+            document.getElementById('timeUpMessage').style.display = 'none';
+            document.getElementById('nextBtn').disabled = true;
+            answered = false;
+            
+            updateProgress();
+            updateScore();
+            startTimer();
+        }
+
+        function selectOption(selectedIndex) {
+            if (answered) return;
+            
+            clearInterval(timer);
+            const question = questions[currentQuestion];
+            const options = document.querySelectorAll('.option');
+            
+            answered = true;
+            
+            options.forEach((option, index) => {
+                option.classList.add('disabled');
+                if (index === question.correct) {
+                    option.classList.add('correct');
+                } else if (index === selectedIndex && selectedIndex !== question.correct) {
+                    option.classList.add('incorrect');
+                }
+            });
+            
+            if (selectedIndex === question.correct) {
+                score++;
+                playCorrectSound();
+            } else {
+                playIncorrectSound();
+            }
+            
+            document.getElementById('explanation').textContent = question.explanation;
+            document.getElementById('explanation').classList.add('show');
+            document.getElementById('nextBtn').disabled = false;
+            
+            updateScore();
+        }
+
+        function nextQuestion() {
+            currentQuestion++;
+            
+            if (currentQuestion < questions.length) {
+                setTimeout(() => {
+                    loadQuestion();
+                }, 500);
+            } else {
+                showResults();
+            }
+        }
+
+        function updateProgress() {
+            const progress = ((currentQuestion + 1) / questions.length) * 100;
+            document.getElementById('progressFill').style.width = progress + '%';
+        }
+
+        function updateScore() {
+            document.getElementById('scoreDisplay').textContent = `Puntuación: ${score}/${currentQuestion + (answered ? 1 : 0)}`;
+        }
+
+        function showResults() {
+            document.getElementById('quizContent').style.display = 'none';
+            document.getElementById('resultsContainer').style.display = 'block';
+            
+            const percentage = Math.round((score / questions.length) * 100);
+            document.getElementById('finalScore').textContent = `${score}/${questions.length} (${percentage}%)`;
+            
+            let message = '';
+            if (percentage >= 90) {
+                message = '¡Excelente! Eres un experto en pastas 🍝👑';
+            } else if (percentage >= 80) {
+                message = '¡Muy bien! Tienes excelentes conocimientos sobre pastas 👍';
+            } else if (percentage >= 70) {
+                message = '¡Bien! Conoces bastante sobre pastas 📚';
+            } else if (percentage >= 60) {
+                message = 'No está mal, pero puedes mejorar estudiando más 📖';
+            } else if (percentage >= 50) {
+                message = 'Resultado regular, necesitas repasar el tema 🤔';
+            } else {
+                message = 'Necesitas estudiar mucho más sobre pastas 📚💪';
+            }
+            
+            document.getElementById('performanceMessage').textContent = message;
+            
+            // Sonido final
+            if (percentage >= 70) {
+                playCorrectSound();
+            } else {
+                playIncorrectSound();
+            }
+        }
+
+        function restartQuiz() {
+            currentQuestion = 0;
+            score = 0;
+            answered = false;
+            clearInterval(timer);
+            
+            document.getElementById('quizContent').style.display = 'block';
+            document.getElementById('resultsContainer').style.display = 'none';
+            
+            loadQuestion();
+        }
+
+        // Inicializar el quiz
+        window.addEventListener('load', async () => {
+            await initAudio();
+            loadQuestion();
         });
 
-        darkModeToggle.addEventListener('click', () => {
-            isDarkMode = !isDarkMode;
-            document.body.classList.toggle('dark-mode', isDarkMode);
-            darkModeToggle.innerHTML = isDarkMode ? '<i class="fas fa-sun"></i>' : '<i class="fas fa-moon"></i>';
+        // Asegurar que el audio funcione en cualquier interacción del usuario
+        document.addEventListener('click', () => {
+            if (Tone.context.state !== 'running') {
+                Tone.start();
+            }
         });
-
-        // Inicializar con la pestaña "home"
-        setActiveTab('home');
     </script>
 </body>
 </html>
