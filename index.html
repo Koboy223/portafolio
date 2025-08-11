@@ -334,6 +334,97 @@
             animation: fadeIn 0.5s ease-out;
         }
 
+        .start-screen {
+            text-align: center;
+            padding: 20px;
+            background: linear-gradient(135deg, #f8f9fa, #e9ecef);
+            border-radius: 20px;
+            margin: 20px 0;
+            border: 2px solid #dee2e6;
+        }
+
+        .start-content h2 {
+            color: #2c3e50;
+            font-size: 2.2rem;
+            margin-bottom: 20px;
+            text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.1);
+        }
+
+        .start-info {
+            background: white;
+            border-radius: 15px;
+            padding: 20px;
+            margin: 20px 0;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+        }
+
+        .start-info p {
+            font-size: 1.2rem;
+            margin: 10px 0;
+            color: #34495e;
+        }
+
+        .start-tips {
+            background: #e3f2fd;
+            border-radius: 15px;
+            padding: 20px;
+            margin: 20px 0;
+            text-align: left;
+        }
+
+        .start-tips h3 {
+            color: #1976d2;
+            margin-bottom: 15px;
+            text-align: center;
+        }
+
+        .start-tips ul {
+            list-style: none;
+            padding: 0;
+        }
+
+        .start-tips li {
+            margin: 10px 0;
+            padding: 8px 12px;
+            background: white;
+            border-radius: 8px;
+            border-left: 4px solid #2196f3;
+            color: #424242;
+        }
+
+        .start-btn {
+            background: linear-gradient(135deg, #4caf50, #388e3c);
+            font-size: 1.3rem;
+            padding: 15px 35px;
+            margin: 20px 0;
+            box-shadow: 0 6px 20px rgba(76, 175, 80, 0.4);
+            animation: bounce 2s infinite;
+        }
+
+        @keyframes bounce {
+            0%, 100% { transform: translateY(0); }
+            50% { transform: translateY(-5px); }
+        }
+
+        .start-btn:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 8px 25px rgba(76, 175, 80, 0.5);
+        }
+
+        .audio-setup {
+            margin-top: 20px;
+            padding: 15px;
+            background: #fff3e0;
+            border-radius: 10px;
+            border: 1px solid #ffcc02;
+        }
+
+        .audio-setup p {
+            color: #f57c00;
+            margin-bottom: 10px;
+            font-weight: 500;
+        }
+
         .time-up {
             background: linear-gradient(135deg, #e74c3c, #c0392b);
             color: white;
@@ -651,6 +742,30 @@
             }
         }
 
+        /* Responsive para pantalla de inicio */
+        @media (max-width: 600px) {
+            .start-content h2 {
+                font-size: 1.8rem;
+            }
+            
+            .start-info p {
+                font-size: 1rem;
+            }
+            
+            .start-btn {
+                font-size: 1.1rem;
+                padding: 12px 25px;
+            }
+            
+            .start-tips {
+                text-align: center;
+            }
+            
+            .start-tips li {
+                text-align: left;
+            }
+        }
+
         /* Dark mode support para dispositivos que lo prefieran */
         @media (prefers-color-scheme: dark) {
             .quiz-container {
@@ -658,12 +773,12 @@
                 color: #e2e8f0;
             }
             
-            .question-container {
+            .question-container, .start-screen {
                 background: #4a5568;
                 border-left-color: #63b3ed;
             }
             
-            .option {
+            .option, .start-info {
                 background: #2d3748;
                 border-color: #4a5568;
                 color: #e2e8f0;
@@ -684,7 +799,7 @@
             <p class="quiz-subtitle">25 preguntas - 10 segundos cada una</p>
         </div>
 
-        <div class="timer-container">
+        <div class="timer-container" style="display: none;">
             <div class="timer" id="timer">10</div>
             <div class="audio-controls">
                 <button class="audio-btn" id="muteBtn" onclick="toggleMute()">🔊 Audio</button>
@@ -692,11 +807,38 @@
             </div>
         </div>
 
-        <div class="progress-bar">
+        <div class="progress-bar" style="display: none;">
             <div class="progress-fill" id="progressFill"></div>
         </div>
 
-        <div id="quizContent">
+        <!-- Pantalla de inicio -->
+        <div id="startScreen" class="start-screen">
+            <div class="start-content">
+                <h2>🍝 Bienvenido al Quiz de Pastas</h2>
+                <div class="start-info">
+                    <p>📋 <strong>25 preguntas</strong> sobre pastas frescas</p>
+                    <p>⏰ <strong>10 segundos</strong> por pregunta</p>
+                    <p>🎯 Pon a prueba tus conocimientos</p>
+                </div>
+                <div class="start-tips">
+                    <h3>💡 Consejos:</h3>
+                    <ul>
+                        <li>Lee cada pregunta cuidadosamente</li>
+                        <li>Mantén el audio activado para mejor experiencia</li>
+                        <li>¡No te preocupes por el tiempo, disfruta aprendiendo!</li>
+                    </ul>
+                </div>
+                <button class="btn start-btn" onclick="startQuiz()">
+                    🚀 Comenzar Quiz
+                </button>
+                <div class="audio-setup">
+                    <p>🔊 Asegúrate de tener el audio activado</p>
+                    <button class="audio-btn" onclick="testAudio()">🎵 Probar Audio</button>
+                </div>
+            </div>
+        </div>
+
+        <div id="quizContent" style="display: none;">
             <div class="question-container" id="questionContainer">
                 <div class="question-number" id="questionNumber">Pregunta 1 de 25</div>
                 <div class="question-text" id="questionText"></div>
@@ -725,6 +867,14 @@
     <script src="https://cdnjs.cloudflare.com/ajax/libs/tone/14.8.49/Tone.js"></script>
 
     <script>
+        // ⚙️ CONFIGURACIÓN DEL TIEMPO - MODIFICA AQUÍ
+        // Cambia este valor para ajustar los segundos por pregunta
+        const QUESTION_TIME_SECONDS = 30; // 🕐 TIEMPO POR PREGUNTA (en segundos)
+        
+        // Otros valores de configuración que puedes modificar:
+        const WARNING_TIME_THRESHOLD = 3; // Tiempo restante para mostrar advertencia
+        const AUDIO_ENABLED_BY_DEFAULT = true; // Audio activado por defecto
+        
         const questions = [
             {
                 question: "Según el documento, ¿dónde tuvo lugar la primera producción de fideos?",
@@ -880,12 +1030,32 @@
 
         let currentQuestion = 0;
         let score = 0;
-        let timeLeft = 30;
+        let timeLeft = QUESTION_TIME_SECONDS; // Usar la constante configurada
         let timer;
         let answered = false;
-        let isMuted = false;
+        let isMuted = !AUDIO_ENABLED_BY_DEFAULT; // Usar configuración por defecto
         let synth;
         let oscillator;
+        let quizStarted = false;
+
+        // Función para probar el audio desde la pantalla de inicio
+        async function testAudio() {
+            if (!synth) {
+                await initAudio();
+            }
+            playTickSound();
+        }
+
+        // Función para iniciar el quiz
+        function startQuiz() {
+            quizStarted = true;
+            document.getElementById('startScreen').style.display = 'none';
+            document.getElementById('quizContent').style.display = 'block';
+            document.querySelector('.timer-container').style.display = 'flex';
+            document.querySelector('.progress-bar').style.display = 'block';
+            
+            loadQuestion();
+        }
 
         // Inicializar Tone.js
         async function initAudio() {
@@ -936,7 +1106,7 @@
         }
 
         function playWarningSound() {
-            if (!isMuted && synth && timeLeft <= 3) {
+            if (!isMuted && synth && timeLeft <= WARNING_TIME_THRESHOLD) {
                 synth.triggerAttackRelease('G4', '0.1');
             }
         }
@@ -947,14 +1117,14 @@
         }
 
         function startTimer() {
-            timeLeft = 10;
+            timeLeft = QUESTION_TIME_SECONDS; // Usar la constante configurada
             updateTimerDisplay();
             
             timer = setInterval(() => {
                 timeLeft--;
                 updateTimerDisplay();
                 
-                if (timeLeft <= 3 && timeLeft > 0) {
+                if (timeLeft <= WARNING_TIME_THRESHOLD && timeLeft > 0) {
                     playWarningSound();
                     document.getElementById('timer').classList.add('warning');
                 }
@@ -970,7 +1140,7 @@
             const timerElement = document.getElementById('timer');
             timerElement.textContent = timeLeft;
             
-            if (timeLeft > 3) {
+            if (timeLeft > WARNING_TIME_THRESHOLD) {
                 timerElement.classList.remove('warning');
             }
         }
@@ -1114,18 +1284,21 @@
             currentQuestion = 0;
             score = 0;
             answered = false;
+            quizStarted = false;
             clearInterval(timer);
             
-            document.getElementById('quizContent').style.display = 'block';
+            // Volver a la pantalla de inicio
+            document.getElementById('startScreen').style.display = 'block';
+            document.getElementById('quizContent').style.display = 'none';
             document.getElementById('resultsContainer').style.display = 'none';
-            
-            loadQuestion();
+            document.querySelector('.timer-container').style.display = 'none';
+            document.querySelector('.progress-bar').style.display = 'none';
         }
 
-        // Inicializar el quiz
+        // Inicializar el audio cuando se carga la página
         window.addEventListener('load', async () => {
             await initAudio();
-            loadQuestion();
+            // El quiz no se inicia automáticamente, espera a que el usuario haga clic
         });
 
         // Asegurar que el audio funcione en cualquier interacción del usuario
@@ -1136,5 +1309,4 @@
         });
     </script>
 </body>
-
 </html>
