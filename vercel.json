@@ -3,10 +3,7 @@
     {
       "src": "/.*",
       "status": 404,
-      "headers": { "Content-Type": "application/json" },
       "dest": "/404.html"
     }
   ]
 }
-
-
