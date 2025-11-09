@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Quiz: Pastas Frescas - Cronometrado</title>
+    <title>Test de Pescados y Mariscos - 100 Preguntas</title>
     <style>
         * {
             margin: 0;
@@ -12,2042 +12,1181 @@
         }
 
         body {
-            font-family: 'Arial', sans-serif;
-            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #e0f2fe 0%, #cffafe 100%);
             min-height: 100vh;
-            display: flex;
-            justify-content: center;
-            align-items: center;
             padding: 20px;
         }
 
-        .quiz-container {
-            background: rgba(255, 255, 255, 0.95);
-            border-radius: 20px;
-            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.1);
+        .container {
             max-width: 900px;
-            width: 100%;
+            margin: 0 auto;
+        }
+
+        .test-card {
+            background: white;
+            border-radius: 20px;
+            box-shadow: 0 10px 40px rgba(0,0,0,0.1);
+            overflow: hidden;
+        }
+
+        .header {
+            background: linear-gradient(135deg, #2563eb 0%, #06b6d4 100%);
+            color: white;
+            padding: 30px;
+            text-align: center;
+        }
+
+        .header h1 {
+            font-size: 2em;
+            margin-bottom: 10px;
+        }
+
+        .progress-bar {
+            background: #e5e7eb;
+            height: 8px;
+        }
+
+        .progress-fill {
+            background: linear-gradient(90deg, #3b82f6 0%, #06b6d4 100%);
+            height: 100%;
+            transition: width 0.3s ease;
+        }
+
+        .question-content {
             padding: 40px;
-            backdrop-filter: blur(10px);
-            animation: fadeIn 0.8s ease-out;
         }
 
-        @keyframes fadeIn {
-            from {
-                opacity: 0;
-                transform: translateY(30px);
-            }
-            to {
-                opacity: 1;
-                transform: translateY(0);
-            }
+        .question-type {
+            display: inline-block;
+            padding: 8px 16px;
+            border-radius: 20px;
+            font-size: 0.85em;
+            font-weight: 600;
+            margin-bottom: 20px;
         }
 
-        .quiz-header {
+        .type-multiple {
+            background: #dbeafe;
+            color: #1e40af;
+        }
+
+        .type-boolean {
+            background: #e9d5ff;
+            color: #6b21a8;
+        }
+
+        .question-text {
+            font-size: 1.5em;
+            font-weight: 700;
+            color: #1f2937;
+            margin-bottom: 30px;
+            line-height: 1.4;
+        }
+
+        .options {
+            display: flex;
+            flex-direction: column;
+            gap: 15px;
+        }
+
+        .option {
+            padding: 20px;
+            border: 2px solid #e5e7eb;
+            border-radius: 12px;
+            background: #f9fafb;
+            cursor: pointer;
+            transition: all 0.2s ease;
+            font-size: 1.05em;
+        }
+
+        .option:hover {
+            background: #f3f4f6;
+            border-color: #d1d5db;
+        }
+
+        .option.selected {
+            background: #2563eb;
+            color: white;
+            border-color: #2563eb;
+            transform: scale(1.02);
+            box-shadow: 0 4px 12px rgba(37, 99, 235, 0.3);
+        }
+
+        .boolean-options {
+            display: flex;
+            gap: 20px;
+        }
+
+        .boolean-options .option {
+            flex: 1;
+            text-align: center;
+            font-weight: 600;
+            font-size: 1.2em;
+            padding: 30px;
+        }
+
+        .option.true.selected {
+            background: #16a34a;
+            border-color: #16a34a;
+        }
+
+        .option.false.selected {
+            background: #dc2626;
+            border-color: #dc2626;
+        }
+
+        .navigation {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 25px 40px;
+            background: #f9fafb;
+            border-top: 1px solid #e5e7eb;
+        }
+
+        .btn {
+            padding: 12px 24px;
+            border: none;
+            border-radius: 10px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.2s ease;
+            font-size: 1em;
+        }
+
+        .btn-prev {
+            background: #d1d5db;
+            color: #374151;
+        }
+
+        .btn-prev:hover:not(:disabled) {
+            background: #9ca3af;
+        }
+
+        .btn-prev:disabled {
+            opacity: 0.5;
+            cursor: not-allowed;
+        }
+
+        .btn-next {
+            background: #2563eb;
+            color: white;
+        }
+
+        .btn-next:hover {
+            background: #1d4ed8;
+        }
+
+        .btn-finish {
+            background: #16a34a;
+            color: white;
+        }
+
+        .btn-finish:hover:not(:disabled) {
+            background: #15803d;
+        }
+
+        .btn-finish:disabled {
+            opacity: 0.5;
+            cursor: not-allowed;
+        }
+
+        .progress-text {
+            color: #6b7280;
+            font-size: 0.9em;
+        }
+
+        .results-container {
+            padding: 40px;
+        }
+
+        .score-card {
+            background: linear-gradient(135deg, #3b82f6 0%, #06b6d4 100%);
+            color: white;
+            padding: 40px;
+            border-radius: 15px;
             text-align: center;
             margin-bottom: 30px;
         }
 
-        .quiz-title {
-            color: #2c3e50;
-            font-size: 2.5rem;
+        .score-number {
+            font-size: 4em;
+            font-weight: 700;
             margin-bottom: 10px;
-            text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.1);
         }
 
-        .quiz-subtitle {
-            color: #7f8c8d;
-            font-size: 1.2rem;
-            font-weight: 300;
+        .score-percentage {
+            font-size: 1.8em;
+            margin-bottom: 10px;
         }
 
-        .timer-container {
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            margin: 20px 0;
-            gap: 20px;
+        .score-message {
+            font-size: 1.2em;
+            opacity: 0.95;
         }
 
-        .timer {
-            background: linear-gradient(135deg, #e74c3c, #c0392b);
-            color: white;
-            padding: 15px 25px;
-            border-radius: 50px;
-            font-size: 1.5rem;
-            font-weight: bold;
-            box-shadow: 0 4px 15px rgba(231, 76, 60, 0.3);
-            animation: pulse 1s infinite;
+        .review-section h2 {
+            font-size: 1.8em;
+            color: #1f2937;
+            margin-bottom: 20px;
         }
 
-        .timer.warning {
-            animation: shake 0.5s infinite;
-            background: linear-gradient(135deg, #f39c12, #e67e22);
+        .review-item {
+            padding: 20px;
+            border-radius: 12px;
+            margin-bottom: 15px;
+            border: 2px solid;
         }
 
-        @keyframes pulse {
-            0% { transform: scale(1); }
-            50% { transform: scale(1.05); }
-            100% { transform: scale(1); }
+        .review-item.correct {
+            background: #f0fdf4;
+            border-color: #86efac;
         }
 
-        @keyframes shake {
-            0%, 100% { transform: translateX(0); }
-            25% { transform: translateX(-3px); }
-            75% { transform: translateX(3px); }
+        .review-item.incorrect {
+            background: #fef2f2;
+            border-color: #fca5a5;
         }
 
-        .audio-controls {
+        .review-question {
+            font-weight: 600;
+            color: #1f2937;
+            margin-bottom: 10px;
             display: flex;
             gap: 10px;
-            align-items: center;
         }
 
-        .audio-btn {
-            background: linear-gradient(135deg, #9b59b6, #8e44ad);
-            color: white;
-            border: none;
-            padding: 10px 15px;
-            border-radius: 25px;
-            cursor: pointer;
-            font-size: 0.9rem;
-            transition: all 0.3s ease;
+        .review-icon {
+            flex-shrink: 0;
         }
 
-        .audio-btn:hover {
-            transform: translateY(-2px);
-            box-shadow: 0 4px 12px rgba(155, 89, 182, 0.3);
+        .review-answers {
+            font-size: 0.95em;
+            margin-left: 30px;
         }
 
-        .progress-bar {
+        .review-answers p {
+            margin: 5px 0;
+        }
+
+        .user-answer {
+            color: #374151;
+        }
+
+        .correct-answer {
+            color: #16a34a;
+            font-weight: 600;
+        }
+
+        .btn-restart {
             width: 100%;
-            height: 8px;
-            background: #ecf0f1;
-            border-radius: 10px;
-            margin: 20px 0;
-            overflow: hidden;
-        }
-
-        .progress-fill {
-            height: 100%;
-            background: linear-gradient(90deg, #3498db, #2ecc71);
-            border-radius: 10px;
-            transition: width 0.5s ease;
-        }
-
-        .question-container {
-            background: #f8f9fa;
-            border-radius: 15px;
-            padding: 25px;
-            margin: 20px 0;
-            border-left: 5px solid #3498db;
-            animation: slideIn 0.5s ease-out;
-        }
-
-        @keyframes slideIn {
-            from {
-                opacity: 0;
-                transform: translateX(-20px);
-            }
-            to {
-                opacity: 1;
-                transform: translateX(0);
-            }
-        }
-
-        .question-number {
-            color: #3498db;
-            font-weight: bold;
-            font-size: 0.9rem;
-            margin-bottom: 10px;
-        }
-
-        .question-text {
-            font-size: 1.3rem;
-            color: #2c3e50;
-            margin-bottom: 20px;
-            font-weight: 500;
-            line-height: 1.4;
-        }
-
-        .options-container {
-            display: grid;
-            gap: 12px;
-        }
-
-        .option {
-            background: white;
-            border: 2px solid #e1e8ed;
-            border-radius: 12px;
-            padding: 15px 20px;
-            cursor: pointer;
-            transition: all 0.3s ease;
-            font-size: 1rem;
-            position: relative;
-            overflow: hidden;
-        }
-
-        .option::before {
-            content: '';
-            position: absolute;
-            top: 0;
-            left: -100%;
-            width: 100%;
-            height: 100%;
-            background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.2), transparent);
-            transition: left 0.5s;
-        }
-
-        .option:hover {
-            border-color: #3498db;
-            transform: translateY(-2px);
-            box-shadow: 0 4px 12px rgba(52, 152, 219, 0.2);
-        }
-
-        .option:hover::before {
-            left: 100%;
-        }
-
-        .option.selected {
-            border-color: #3498db;
-            background: linear-gradient(135deg, #3498db, #2980b9);
+            background: #2563eb;
             color: white;
-            transform: scale(1.02);
-        }
-
-        .option.correct {
-            border-color: #27ae60;
-            background: linear-gradient(135deg, #27ae60, #2ecc71);
-            color: white;
-            animation: correctPulse 0.5s;
-        }
-
-        .option.incorrect {
-            border-color: #e74c3c;
-            background: linear-gradient(135deg, #e74c3c, #c0392b);
-            color: white;
-            animation: incorrectShake 0.5s;
-        }
-
-        .option.disabled {
-            pointer-events: none;
-            opacity: 0.6;
-        }
-
-        @keyframes correctPulse {
-            0% { transform: scale(1); }
-            50% { transform: scale(1.05); }
-            100% { transform: scale(1); }
-        }
-
-        @keyframes incorrectShake {
-            0%, 100% { transform: translateX(0); }
-            25% { transform: translateX(-5px); }
-            75% { transform: translateX(5px); }
-        }
-
-        .controls {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            margin-top: 30px;
-            flex-wrap: wrap;
-            gap: 15px;
-        }
-
-        .btn {
-            background: linear-gradient(135deg, #3498db, #2980b9);
-            color: white;
-            border: none;
-            padding: 12px 25px;
-            border-radius: 25px;
-            cursor: pointer;
-            font-size: 1rem;
-            font-weight: 500;
-            transition: all 0.3s ease;
-            box-shadow: 0 4px 15px rgba(52, 152, 219, 0.3);
-        }
-
-        .btn:hover {
-            transform: translateY(-2px);
-            box-shadow: 0 6px 20px rgba(52, 152, 219, 0.4);
-        }
-
-        .btn:disabled {
-            background: #bdc3c7;
-            cursor: not-allowed;
-            transform: none;
-            box-shadow: none;
-        }
-
-        .score-display {
-            background: linear-gradient(135deg, #f39c12, #e67e22);
-            color: white;
-            padding: 10px 20px;
-            border-radius: 20px;
-            font-weight: bold;
-            font-size: 1.1rem;
-            box-shadow: 0 4px 15px rgba(243, 156, 18, 0.3);
-        }
-
-        .results-container {
-            text-align: center;
-            background: linear-gradient(135deg, #2c3e50, #34495e);
-            color: white;
-            border-radius: 20px;
-            padding: 40px;
-            margin-top: 20px;
-        }
-
-        .final-score {
-            font-size: 3rem;
-            margin: 20px 0;
-            text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.3);
-        }
-
-        .performance-message {
-            font-size: 1.3rem;
-            margin: 20px 0;
-            font-weight: 300;
-        }
-
-        .restart-btn {
-            background: linear-gradient(135deg, #e74c3c, #c0392b);
-            margin-top: 20px;
-            padding: 15px 30px;
-            font-size: 1.1rem;
-        }
-
-        .explanation {
-            background: #fff3cd;
-            border: 1px solid #ffeaa7;
-            border-radius: 10px;
             padding: 15px;
-            margin-top: 15px;
-            font-size: 0.95rem;
-            color: #856404;
-            display: none;
-        }
-
-        .explanation.show {
-            display: block;
-            animation: fadeIn 0.5s ease-out;
-        }
-
-        .start-screen {
-            text-align: center;
-            padding: 20px;
-            background: linear-gradient(135deg, #f8f9fa, #e9ecef);
-            border-radius: 20px;
-            margin: 20px 0;
-            border: 2px solid #dee2e6;
-        }
-
-        .start-content h2 {
-            color: #2c3e50;
-            font-size: 2.2rem;
-            margin-bottom: 20px;
-            text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.1);
-        }
-
-        .start-info {
-            background: white;
-            border-radius: 15px;
-            padding: 20px;
-            margin: 20px 0;
-            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
-        }
-
-        .start-info p {
-            font-size: 1.2rem;
-            margin: 10px 0;
-            color: #34495e;
-        }
-
-        .start-tips {
-            background: #e3f2fd;
-            border-radius: 15px;
-            padding: 20px;
-            margin: 20px 0;
-            text-align: left;
-        }
-
-        .start-tips h3 {
-            color: #1976d2;
-            margin-bottom: 15px;
-            text-align: center;
-        }
-
-        .start-tips ul {
-            list-style: none;
-            padding: 0;
-        }
-
-        .start-tips li {
-            margin: 10px 0;
-            padding: 8px 12px;
-            background: white;
-            border-radius: 8px;
-            border-left: 4px solid #2196f3;
-            color: #424242;
-        }
-
-        .start-btn {
-            background: linear-gradient(135deg, #4caf50, #388e3c);
-            font-size: 1.3rem;
-            padding: 15px 35px;
-            margin: 20px 0;
-            box-shadow: 0 6px 20px rgba(76, 175, 80, 0.4);
-            animation: bounce 2s infinite;
-        }
-
-        @keyframes bounce {
-            0%, 100% { transform: translateY(0); }
-            50% { transform: translateY(-5px); }
-        }
-
-        .start-btn:hover {
-            transform: translateY(-3px);
-            box-shadow: 0 8px 25px rgba(76, 175, 80, 0.5);
-        }
-
-        .audio-setup {
+            font-size: 1.1em;
             margin-top: 20px;
-            padding: 15px;
-            background: #fff3e0;
-            border-radius: 10px;
-            border: 1px solid #ffcc02;
         }
 
-        .audio-setup p {
-            color: #f57c00;
-            margin-bottom: 10px;
-            font-weight: 500;
+        .btn-restart:hover {
+            background: #1d4ed8;
         }
 
-        .time-up {
-            background: linear-gradient(135deg, #e74c3c, #c0392b);
-            color: white;
-            padding: 20px;
-            border-radius: 15px;
-            text-align: center;
-            font-size: 1.2rem;
-            font-weight: bold;
-            margin: 15px 0;
-            animation: flashRed 0.5s;
-        }
-
-        @keyframes flashRed {
-            0%, 100% { opacity: 1; }
-            50% { opacity: 0.5; }
-        }
-
-        /* Tablets y dispositivos medianos */
-        @media (max-width: 1024px) {
-            .quiz-container {
-                max-width: 95%;
-                padding: 30px;
-            }
-            
-            .quiz-title {
-                font-size: 2.2rem;
-            }
-            
-            .question-text {
-                font-size: 1.2rem;
-            }
-        }
-
-        /* Tablets pequeñas */
         @media (max-width: 768px) {
-            body {
-                padding: 10px;
-            }
-            
-            .quiz-container {
+            .question-content {
                 padding: 25px;
-                margin: 5px;
-                border-radius: 15px;
             }
-            
-            .quiz-title {
-                font-size: 2rem;
-                margin-bottom: 8px;
-            }
-            
-            .quiz-subtitle {
-                font-size: 1rem;
-            }
-            
-            .timer {
-                padding: 12px 20px;
-                font-size: 1.3rem;
-            }
-            
-            .question-text {
-                font-size: 1.1rem;
-                margin-bottom: 15px;
-            }
-            
-            .option {
-                padding: 12px 15px;
-                font-size: 0.95rem;
-            }
-            
-            .controls {
-                flex-direction: column;
-                gap: 10px;
-            }
-            
-            .btn {
-                width: 100%;
-                padding: 15px;
-                font-size: 1.1rem;
-            }
-            
-            .score-display {
-                text-align: center;
-                width: 100%;
-            }
-        }
 
-        /* Móviles */
-        @media (max-width: 600px) {
-            body {
-                padding: 5px;
-                align-items: flex-start;
-                padding-top: 20px;
+            .question-text {
+                font-size: 1.2em;
             }
-            
-            .quiz-container {
+
+            .navigation {
                 padding: 20px;
-                margin: 0;
-                border-radius: 12px;
-                min-height: calc(100vh - 40px);
-            }
-            
-            .quiz-title {
-                font-size: 1.8rem;
-                line-height: 1.2;
-            }
-            
-            .quiz-subtitle {
-                font-size: 0.9rem;
-            }
-            
-            .timer-container {
-                flex-direction: column;
-                gap: 10px;
-                margin: 15px 0;
-            }
-            
-            .timer {
-                padding: 10px 18px;
-                font-size: 1.2rem;
-            }
-            
-            .audio-controls {
-                justify-content: center;
                 flex-wrap: wrap;
-            }
-            
-            .audio-btn {
-                padding: 8px 12px;
-                font-size: 0.8rem;
-            }
-            
-            .question-container {
-                padding: 20px;
-                margin: 15px 0;
-            }
-            
-            .question-number {
-                font-size: 0.8rem;
-                margin-bottom: 8px;
-            }
-            
-            .question-text {
-                font-size: 1rem;
-                line-height: 1.3;
-                margin-bottom: 15px;
-            }
-            
-            .options-container {
                 gap: 10px;
             }
-            
-            .option {
-                padding: 12px 15px;
-                font-size: 0.9rem;
-                border-radius: 10px;
-            }
-            
-            .explanation {
-                padding: 12px;
-                font-size: 0.85rem;
-                margin-top: 12px;
-            }
-            
-            .time-up {
-                padding: 15px;
-                font-size: 1rem;
-                margin: 10px 0;
-            }
-            
-            .controls {
-                margin-top: 20px;
-            }
-            
-            .score-display {
-                padding: 8px 15px;
-                font-size: 1rem;
-            }
-            
-            .btn {
-                padding: 12px;
-                font-size: 1rem;
-                border-radius: 20px;
-            }
-            
-            .results-container {
-                padding: 30px 20px;
-                margin-top: 15px;
-            }
-            
-            .final-score {
-                font-size: 2.5rem;
-                margin: 15px 0;
-            }
-            
-            .performance-message {
-                font-size: 1.1rem;
-                margin: 15px 0;
-                line-height: 1.3;
-            }
-            
-            .restart-btn {
-                padding: 12px 25px;
-                font-size: 1rem;
-                margin-top: 15px;
-            }
-        }
 
-        /* Móviles muy pequeños */
-        @media (max-width: 375px) {
-            .quiz-container {
-                padding: 15px;
-            }
-            
-            .quiz-title {
-                font-size: 1.6rem;
-            }
-            
-            .timer {
-                padding: 8px 15px;
-                font-size: 1.1rem;
-            }
-            
-            .question-container {
-                padding: 15px;
-            }
-            
-            .question-text {
-                font-size: 0.95rem;
-            }
-            
-            .option {
-                padding: 10px 12px;
-                font-size: 0.85rem;
-            }
-            
-            .final-score {
-                font-size: 2rem;
-            }
-        }
-
-        /* Landscape orientation para móviles */
-        @media (max-height: 500px) and (orientation: landscape) {
-            body {
-                align-items: flex-start;
-                padding-top: 10px;
-            }
-            
-            .quiz-container {
-                min-height: auto;
-                max-height: calc(100vh - 20px);
-                overflow-y: auto;
-            }
-            
-            .quiz-header {
-                margin-bottom: 15px;
-            }
-            
-            .quiz-title {
-                font-size: 1.5rem;
-                margin-bottom: 5px;
-            }
-            
-            .quiz-subtitle {
-                font-size: 0.8rem;
-            }
-            
-            .timer-container {
-                margin: 10px 0;
-            }
-            
-            .timer {
-                padding: 6px 12px;
-                font-size: 1rem;
-            }
-            
-            .question-container {
-                padding: 15px;
-                margin: 10px 0;
-            }
-            
-            .question-text {
-                font-size: 0.9rem;
-                margin-bottom: 10px;
-            }
-            
-            .option {
-                padding: 8px 12px;
-                font-size: 0.8rem;
-            }
-            
-            .controls {
-                margin-top: 15px;
-            }
-        }
-
-        /* Mejoras para accesibilidad en pantallas pequeñas */
-        @media (max-width: 480px) {
-            .option:hover {
-                transform: none; /* Evitar efectos hover en móviles */
-            }
-            
-            .option:active {
-                transform: scale(0.98);
-                background-color: #f0f0f0;
-            }
-            
-            /* Aumentar área de toque */
-            .btn, .option, .audio-btn {
-                min-height: 44px; /* Estándar iOS/Android para área de toque */
-            }
-            
-            /* Mejorar legibilidad */
-            .question-text, .option {
-                line-height: 1.4;
-            }
-        }
-
-        /* Responsive para pantalla de inicio */
-        @media (max-width: 600px) {
-            .start-content h2 {
-                font-size: 1.8rem;
-            }
-            
-            .start-info p {
-                font-size: 1rem;
-            }
-            
-            .start-btn {
-                font-size: 1.1rem;
-                padding: 12px 25px;
-            }
-            
-            .start-tips {
-                text-align: center;
-            }
-            
-            .start-tips li {
-                text-align: left;
-            }
-        }
-
-        /* Dark mode support para dispositivos que lo prefieran */
-        @media (prefers-color-scheme: dark) {
-            .quiz-container {
-                background: rgba(45, 55, 72, 0.95);
-                color: #e2e8f0;
-            }
-            
-            .question-container, .start-screen                 opacity: 0;
-                transform: translateY(30px);
-            }
-            to {
-                opacity: 1;
-                transform: translateY(0);
-            }
-        }
-
-        .quiz-header {
-            text-align: center;
-            margin-bottom: 30px;
-        }
-
-        .quiz-title {
-            color: #2c3e50;
-            font-size: 2.5rem;
-            margin-bottom: 10px;
-            text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.1);
-        }
-
-        .quiz-subtitle {
-            color: #7f8c8d;
-            font-size: 1.2rem;
-            font-weight: 300;
-        }
-
-        .timer-container {
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            margin: 20px 0;
-            gap: 20px;
-        }
-
-        .timer {
-            background: linear-gradient(135deg, #e74c3c, #c0392b);
-            color: white;
-            padding: 15px 25px;
-            border-radius: 50px;
-            font-size: 1.5rem;
-            font-weight: bold;
-            box-shadow: 0 4px 15px rgba(231, 76, 60, 0.3);
-            animation: pulse 1s infinite;
-        }
-
-        .timer.warning {
-            animation: shake 0.5s infinite;
-            background: linear-gradient(135deg, #f39c12, #e67e22);
-        }
-
-        @keyframes pulse {
-            0% { transform: scale(1); }
-            50% { transform: scale(1.05); }
-            100% { transform: scale(1); }
-        }
-
-        @keyframes shake {
-            0%, 100% { transform: translateX(0); }
-            25% { transform: translateX(-3px); }
-            75% { transform: translateX(3px); }
-        }
-
-        .audio-controls {
-            display: flex;
-            gap: 10px;
-            align-items: center;
-        }
-
-        .audio-btn {
-            background: linear-gradient(135deg, #9b59b6, #8e44ad);
-            color: white;
-            border: none;
-            padding: 10px 15px;
-            border-radius: 25px;
-            cursor: pointer;
-            font-size: 0.9rem;
-            transition: all 0.3s ease;
-        }
-
-        .audio-btn:hover {
-            transform: translateY(-2px);
-            box-shadow: 0 4px 12px rgba(155, 89, 182, 0.3);
-        }
-
-        .progress-bar {
-            width: 100%;
-            height: 8px;
-            background: #ecf0f1;
-            border-radius: 10px;
-            margin: 20px 0;
-            overflow: hidden;
-        }
-
-        .progress-fill {
-            height: 100%;
-            background: linear-gradient(90deg, #3498db, #2ecc71);
-            border-radius: 10px;
-            transition: width 0.5s ease;
-        }
-
-        .question-container {
-            background: #f8f9fa;
-            border-radius: 15px;
-            padding: 25px;
-            margin: 20px 0;
-            border-left: 5px solid #3498db;
-            animation: slideIn 0.5s ease-out;
-        }
-
-        @keyframes slideIn {
-            from {
-                opacity: 0;
-                transform: translateX(-20px);
-            }
-            to {
-                opacity: 1;
-                transform: translateX(0);
-            }
-        }
-
-        .question-number {
-            color: #3498db;
-            font-weight: bold;
-            font-size: 0.9rem;
-            margin-bottom: 10px;
-        }
-
-        .question-text {
-            font-size: 1.3rem;
-            color: #2c3e50;
-            margin-bottom: 20px;
-            font-weight: 500;
-            line-height: 1.4;
-        }
-
-        .options-container {
-            display: grid;
-            gap: 12px;
-        }
-
-        .option {
-            background: white;
-            border: 2px solid #e1e8ed;
-            border-radius: 12px;
-            padding: 15px 20px;
-            cursor: pointer;
-            transition: all 0.3s ease;
-            font-size: 1rem;
-            position: relative;
-            overflow: hidden;
-        }
-
-        .option::before {
-            content: '';
-            position: absolute;
-            top: 0;
-            left: -100%;
-            width: 100%;
-            height: 100%;
-            background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.2), transparent);
-            transition: left 0.5s;
-        }
-
-        .option:hover {
-            border-color: #3498db;
-            transform: translateY(-2px);
-            box-shadow: 0 4px 12px rgba(52, 152, 219, 0.2);
-        }
-
-        .option:hover::before {
-            left: 100%;
-        }
-
-        .option.selected {
-            border-color: #3498db;
-            background: linear-gradient(135deg, #3498db, #2980b9);
-            color: white;
-            transform: scale(1.02);
-        }
-
-        .option.correct {
-            border-color: #27ae60;
-            background: linear-gradient(135deg, #27ae60, #2ecc71);
-            color: white;
-            animation: correctPulse 0.5s;
-        }
-
-        .option.incorrect {
-            border-color: #e74c3c;
-            background: linear-gradient(135deg, #e74c3c, #c0392b);
-            color: white;
-            animation: incorrectShake 0.5s;
-        }
-
-        .option.disabled {
-            pointer-events: none;
-            opacity: 0.6;
-        }
-
-        @keyframes correctPulse {
-            0% { transform: scale(1); }
-            50% { transform: scale(1.05); }
-            100% { transform: scale(1); }
-        }
-
-        @keyframes incorrectShake {
-            0%, 100% { transform: translateX(0); }
-            25% { transform: translateX(-5px); }
-            75% { transform: translateX(5px); }
-        }
-
-        .controls {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            margin-top: 30px;
-            flex-wrap: wrap;
-            gap: 15px;
-        }
-
-        .btn {
-            background: linear-gradient(135deg, #3498db, #2980b9);
-            color: white;
-            border: none;
-            padding: 12px 25px;
-            border-radius: 25px;
-            cursor: pointer;
-            font-size: 1rem;
-            font-weight: 500;
-            transition: all 0.3s ease;
-            box-shadow: 0 4px 15px rgba(52, 152, 219, 0.3);
-        }
-
-        .btn:hover {
-            transform: translateY(-2px);
-            box-shadow: 0 6px 20px rgba(52, 152, 219, 0.4);
-        }
-
-        .btn:disabled {
-            background: #bdc3c7;
-            cursor: not-allowed;
-            transform: none;
-            box-shadow: none;
-        }
-
-        .score-display {
-            background: linear-gradient(135deg, #f39c12, #e67e22);
-            color: white;
-            padding: 10px 20px;
-            border-radius: 20px;
-            font-weight: bold;
-            font-size: 1.1rem;
-            box-shadow: 0 4px 15px rgba(243, 156, 18, 0.3);
-        }
-
-        .results-container {
-            text-align: center;
-            background: linear-gradient(135deg, #2c3e50, #34495e);
-            color: white;
-            border-radius: 20px;
-            padding: 40px;
-            margin-top: 20px;
-        }
-
-        .final-score {
-            font-size: 3rem;
-            margin: 20px 0;
-            text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.3);
-        }
-
-        .performance-message {
-            font-size: 1.3rem;
-            margin: 20px 0;
-            font-weight: 300;
-        }
-
-        .restart-btn {
-            background: linear-gradient(135deg, #e74c3c, #c0392b);
-            margin-top: 20px;
-            padding: 15px 30px;
-            font-size: 1.1rem;
-        }
-
-        .explanation {
-            background: #fff3cd;
-            border: 1px solid #ffeaa7;
-            border-radius: 10px;
-            padding: 15px;
-            margin-top: 15px;
-            font-size: 0.95rem;
-            color: #856404;
-            display: none;
-        }
-
-        .explanation.show {
-            display: block;
-            animation: fadeIn 0.5s ease-out;
-        }
-
-        .start-screen {
-            text-align: center;
-            padding: 20px;
-            background: linear-gradient(135deg, #f8f9fa, #e9ecef);
-            border-radius: 20px;
-            margin: 20px 0;
-            border: 2px solid #dee2e6;
-        }
-
-        .start-content h2 {
-            color: #2c3e50;
-            font-size: 2.2rem;
-            margin-bottom: 20px;
-            text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.1);
-        }
-
-        .start-info {
-            background: white;
-            border-radius: 15px;
-            padding: 20px;
-            margin: 20px 0;
-            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
-        }
-
-        .start-info p {
-            font-size: 1.2rem;
-            margin: 10px 0;
-            color: #34495e;
-        }
-
-        .start-tips {
-            background: #e3f2fd;
-            border-radius: 15px;
-            padding: 20px;
-            margin: 20px 0;
-            text-align: left;
-        }
-
-        .start-tips h3 {
-            color: #1976d2;
-            margin-bottom: 15px;
-            text-align: center;
-        }
-
-        .start-tips ul {
-            list-style: none;
-            padding: 0;
-        }
-
-        .start-tips li {
-            margin: 10px 0;
-            padding: 8px 12px;
-            background: white;
-            border-radius: 8px;
-            border-left: 4px solid #2196f3;
-            color: #424242;
-        }
-
-        .start-btn {
-            background: linear-gradient(135deg, #4caf50, #388e3c);
-            font-size: 1.3rem;
-            padding: 15px 35px;
-            margin: 20px 0;
-            box-shadow: 0 6px 20px rgba(76, 175, 80, 0.4);
-            animation: bounce 2s infinite;
-        }
-
-        @keyframes bounce {
-            0%, 100% { transform: translateY(0); }
-            50% { transform: translateY(-5px); }
-        }
-
-        .start-btn:hover {
-            transform: translateY(-3px);
-            box-shadow: 0 8px 25px rgba(76, 175, 80, 0.5);
-        }
-
-        .audio-setup {
-            margin-top: 20px;
-            padding: 15px;
-            background: #fff3e0;
-            border-radius: 10px;
-            border: 1px solid #ffcc02;
-        }
-
-        .audio-setup p {
-            color: #f57c00;
-            margin-bottom: 10px;
-            font-weight: 500;
-        }
-
-        .time-up {
-            background: linear-gradient(135deg, #e74c3c, #c0392b);
-            color: white;
-            padding: 20px;
-            border-radius: 15px;
-            text-align: center;
-            font-size: 1.2rem;
-            font-weight: bold;
-            margin: 15px 0;
-            animation: flashRed 0.5s;
-        }
-
-        @keyframes flashRed {
-            0%, 100% { opacity: 1; }
-            50% { opacity: 0.5; }
-        }
-
-        /* Tablets y dispositivos medianos */
-        @media (max-width: 1024px) {
-            .quiz-container {
-                max-width: 95%;
-                padding: 30px;
-            }
-            
-            .quiz-title {
-                font-size: 2.2rem;
-            }
-            
-            .question-text {
-                font-size: 1.2rem;
-            }
-        }
-
-        /* Tablets pequeñas */
-        @media (max-width: 768px) {
-            body {
-                padding: 10px;
-            }
-            
-            .quiz-container {
-                padding: 25px;
-                margin: 5px;
-                border-radius: 15px;
-            }
-            
-            .quiz-title {
-                font-size: 2rem;
-                margin-bottom: 8px;
-            }
-            
-            .quiz-subtitle {
-                font-size: 1rem;
-            }
-            
-            .timer {
-                padding: 12px 20px;
-                font-size: 1.3rem;
-            }
-            
-            .question-text {
-                font-size: 1.1rem;
-                margin-bottom: 15px;
-            }
-            
-            .option {
-                padding: 12px 15px;
-                font-size: 0.95rem;
-            }
-            
-            .controls {
+            .boolean-options {
                 flex-direction: column;
-                gap: 10px;
-            }
-            
-            .btn {
-                width: 100%;
-                padding: 15px;
-                font-size: 1.1rem;
-            }
-            
-            .score-display {
-                text-align: center;
-                width: 100%;
-            }
-        }
-
-        /* Móviles */
-        @media (max-width: 600px) {
-            body {
-                padding: 5px;
-                align-items: flex-start;
-                padding-top: 20px;
-            }
-            
-            .quiz-container {
-                padding: 20px;
-                margin: 0;
-                border-radius: 12px;
-                min-height: calc(100vh - 40px);
-            }
-            
-            .quiz-title {
-                font-size: 1.8rem;
-                line-height: 1.2;
-            }
-            
-            .quiz-subtitle {
-                font-size: 0.9rem;
-            }
-            
-            .timer-container {
-                flex-direction: column;
-                gap: 10px;
-                margin: 15px 0;
-            }
-            
-            .timer {
-                padding: 10px 18px;
-                font-size: 1.2rem;
-            }
-            
-            .audio-controls {
-                justify-content: center;
-                flex-wrap: wrap;
-            }
-            
-            .audio-btn {
-                padding: 8px 12px;
-                font-size: 0.8rem;
-            }
-            
-            .question-container {
-                padding: 20px;
-                margin: 15px 0;
-            }
-            
-            .question-number {
-                font-size: 0.8rem;
-                margin-bottom: 8px;
-            }
-            
-            .question-text {
-                font-size: 1rem;
-                line-height: 1.3;
-                margin-bottom: 15px;
-            }
-            
-            .options-container {
-                gap: 10px;
-            }
-            
-            .option {
-                padding: 12px 15px;
-                font-size: 0.9rem;
-                border-radius: 10px;
-            }
-            
-            .explanation {
-                padding: 12px;
-                font-size: 0.85rem;
-                margin-top: 12px;
-            }
-            
-            .time-up {
-                padding: 15px;
-                font-size: 1rem;
-                margin: 10px 0;
-            }
-            
-            .controls {
-                margin-top: 20px;
-            }
-            
-            .score-display {
-                padding: 8px 15px;
-                font-size: 1rem;
-            }
-            
-            .btn {
-                padding: 12px;
-                font-size: 1rem;
-                border-radius: 20px;
-            }
-            
-            .results-container {
-                padding: 30px 20px;
-                margin-top: 15px;
-            }
-            
-            .final-score {
-                font-size: 2.5rem;
-                margin: 15px 0;
-            }
-            
-            .performance-message {
-                font-size: 1.1rem;
-                margin: 15px 0;
-                line-height: 1.3;
-            }
-            
-            .restart-btn {
-                padding: 12px 25px;
-                font-size: 1rem;
-                margin-top: 15px;
-            }
-        }
-
-        /* Móviles muy pequeños */
-        @media (max-width: 375px) {
-            .quiz-container {
-                padding: 15px;
-            }
-            
-            .quiz-title {
-                font-size: 1.6rem;
-            }
-            
-            .timer {
-                padding: 8px 15px;
-                font-size: 1.1rem;
-            }
-            
-            .question-container {
-                padding: 15px;
-            }
-            
-            .question-text {
-                font-size: 0.95rem;
-            }
-            
-            .option {
-                padding: 10px 12px;
-                font-size: 0.85rem;
-            }
-            
-            .final-score {
-                font-size: 2rem;
-            }
-        }
-
-        /* Landscape orientation para móviles */
-        @media (max-height: 500px) and (orientation: landscape) {
-            body {
-                align-items: flex-start;
-                padding-top: 10px;
-            }
-            
-            .quiz-container {
-                min-height: auto;
-                max-height: calc(100vh - 20px);
-                overflow-y: auto;
-            }
-            
-            .quiz-header {
-                margin-bottom: 15px;
-            }
-            
-            .quiz-title {
-                font-size: 1.5rem;
-                margin-bottom: 5px;
-            }
-            
-            .quiz-subtitle {
-                font-size: 0.8rem;
-            }
-            
-            .timer-container {
-                margin: 10px 0;
-            }
-            
-            .timer {
-                padding: 6px 12px;
-                font-size: 1rem;
-            }
-            
-            .question-container {
-                padding: 15px;
-                margin: 10px 0;
-            }
-            
-            .question-text {
-                font-size: 0.9rem;
-                margin-bottom: 10px;
-            }
-            
-            .option {
-                padding: 8px 12px;
-                font-size: 0.8rem;
-            }
-            
-            .controls {
-                margin-top: 15px;
-            }
-        }
-
-        /* Mejoras para accesibilidad en pantallas pequeñas */
-        @media (max-width: 480px) {
-            .option:hover {
-                transform: none; /* Evitar efectos hover en móviles */
-            }
-            
-            .option:active {
-                transform: scale(0.98);
-                background-color: #f0f0f0;
-            }
-            
-            /* Aumentar área de toque */
-            .btn, .option, .audio-btn {
-                min-height: 44px; /* Estándar iOS/Android para área de toque */
-            }
-            
-            /* Mejorar legibilidad */
-            .question-text, .option {
-                line-height: 1.4;
-            }
-        }
-
-        /* Responsive para pantalla de inicio */
-        @media (max-width: 600px) {
-            .start-content h2 {
-                font-size: 1.8rem;
-            }
-            
-            .start-info p {
-                font-size: 1rem;
-            }
-            
-            .start-btn {
-                font-size: 1.1rem;
-                padding: 12px 25px;
-            }
-            
-            .start-tips {
-                text-align: center;
-            }
-            
-            .start-tips li {
-                text-align: left;
-            }
-        }
-
-        /* Dark mode support para dispositivos que lo prefieran */
-        @media (prefers-color-scheme: dark) {
-            .quiz-container {
-                background: rgba(45, 55, 72, 0.95);
-                color: #e2e8f0;
-            }
-            
-            .question-container, .start-screen {
-                background: #4a5568;
-                border-left-color: #63b3ed;
-            }
-            
-            .option, .start-info {
-                background: #2d3748;
-                border-color: #4a5568;
-                color: #e2e8f0;
-            }
-            
-            .explanation {
-                background: #744210;
-                border-color: #d69e2e;
-                color: #faf089;
             }
         }
     </style>
 </head>
 <body>
-    <div class="quiz-container">
-        <div class="quiz-header">
-            <h1 class="quiz-title">🍝 Quiz de Pastas - Cronometrado</h1>
-            <p class="quiz-subtitle">25 preguntas - 10 segundos cada una</p>
-        </div>
-
-        <div class="timer-container" style="display: none;">
-            <div class="timer" id="timer">10</div>
-            <div class="audio-controls">
-                <button class="audio-btn" id="muteBtn" onclick="toggleMute()">🔊 Audio</button>
-                <button class="audio-btn" onclick="playTickSound()">🎵 Test</button>
-            </div>
-        </div>
-
-        <div class="progress-bar" style="display: none;">
-            <div class="progress-fill" id="progressFill"></div>
-        </div>
-
-        <!-- Pantalla de inicio -->
-        <div id="startScreen" class="start-screen">
-            <div class="start-content">
-                <h2>🍝 Bienvenido al Quiz de Pastas</h2>
-                <div class="start-info">
-                    <p>📋 <strong>25 preguntas</strong> sobre pastas frescas</p>
-                    <p>⏰ <strong>10 segundos</strong> por pregunta</p>
-                    <p>🎯 Pon a prueba tus conocimientos</p>
-                </div>
-                <div class="start-tips">
-                    <h3>💡 Consejos:</h3>
-                    <ul>
-                        <li>Lee cada pregunta cuidadosamente</li>
-                        <li>Mantén el audio activado para mejor experiencia</li>
-                        <li>¡No te preocupes por el tiempo, disfruta aprendiendo!</li>
-                    </ul>
-                </div>
-                <button class="btn start-btn" onclick="startQuiz()">
-                    🚀 Comenzar Quiz
-                </button>
-                <div class="audio-setup">
-                    <p>🔊 Asegúrate de tener el audio activado</p>
-                    <button class="audio-btn" onclick="testAudio()">🎵 Probar Audio</button>
-                </div>
-            </div>
-        </div>
-
-        <div id="quizContent" style="display: none;">
-            <div class="question-container" id="questionContainer">
-                <div class="question-number" id="questionNumber">Pregunta 1 de 25</div>
-                <div class="question-text" id="questionText"></div>
-                <div class="options-container" id="optionsContainer"></div>
-                <div class="explanation" id="explanation"></div>
-                <div id="timeUpMessage" class="time-up" style="display: none;">
-                    ⏰ ¡Tiempo agotado! La respuesta correcta se mostrará en verde.
-                </div>
-            </div>
-
-            <div class="controls">
-                <div class="score-display" id="scoreDisplay">Puntuación: 0/0</div>
-                <button class="btn" id="nextBtn" onclick="nextQuestion()" disabled>Siguiente</button>
-            </div>
-        </div>
-
-        <div id="resultsContainer" class="results-container" style="display: none;">
-            <h2>¡Quiz Completado! 🎉</h2>
-            <div class="final-score" id="finalScore"></div>
-            <div class="performance-message" id="performanceMessage"></div>
-            <button class="btn restart-btn" onclick="restartQuiz()">Reiniciar Quiz</button>
-        </div>
+    <div class="container">
+        <div class="test-card" id="testCard"></div>
     </div>
 
-    <!-- Tone.js para audio -->
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/tone/14.8.49/Tone.js"></script>
-
     <script>
-        // ⚙️ CONFIGURACIÓN DEL TIEMPO - MODIFICA AQUÍ
-        // Cambia este valor para ajustar los segundos por pregunta
-        const QUESTION_TIME_SECONDS = 30; // 🕐 TIEMPO POR PREGUNTA (en segundos)
-        
-        // Otros valores de configuración que puedes modificar:
-        const WARNING_TIME_THRESHOLD = 3; // Tiempo restante para mostrar advertencia
-        const AUDIO_ENABLED_BY_DEFAULT = true; // Audio activado por defecto
-        
-        const questions = [
+        const allQuestions = [
+            // Preguntas de Opción Múltiple
             {
-                question: "Según el documento, ¿dónde tuvo lugar la primera producción de fideos?",
-                options: ["Italia", "China", "Oriente Medio", "Asia en general"],
-                correct: 1,
-                explanation: "Según Houyuan Lu de la Academia de Ciencias de China: 'Esta investigación ha demostrado que la primera producción de fideos tuvo lugar en China.'"
+                id: 1,
+                type: 'multiple',
+                question: '¿De qué se compone principalmente la carne de los pescados?',
+                options: ['Agua, proteínas, grasas y minerales', 'Solo proteínas y agua', 'Carbohidratos y proteínas', 'Grasas y minerales únicamente'],
+                correct: 0
             },
             {
-                question: "¿Cuáles son los ingredientes principales de la pasta fresca?",
-                options: ["Sémola de trigo y agua", "Harina de trigo, huevos y sal", "Harina, agua y aceite", "Trigo duro y sal"],
-                correct: 1,
-                explanation: "La pasta fresca se elabora de modo artesanal con harina de trigo, huevos y sal."
+                id: 2,
+                type: 'multiple',
+                question: '¿Por qué la cocción del pescado es rápida?',
+                options: ['Tiene escaso tejido conectivo', 'Tiene mucha grasa', 'Es muy pequeño', 'Tiene mucha agua'],
+                correct: 0
             },
             {
-                question: "¿Qué significa la expresión italiana 'al dente'?",
-                options: ["Que la pasta esté muy blanda", "Que esté crujiente por fuera", "Que al morder se encuentre el exterior blando y el interior duro", "Que esté completamente cocida"],
-                correct: 2,
-                explanation: "Al dente significa que al morder un trozo de pasta se debe encontrar el exterior blando y el interior duro, presentando una leve resistencia al morder."
+                id: 3,
+                type: 'multiple',
+                question: '¿Cuál es el principal riesgo en la cocción del pescado?',
+                options: ['El abuso en el tiempo de cocción', 'La falta de condimentos', 'La temperatura muy baja', 'El exceso de grasa'],
+                correct: 0
             },
             {
-                question: "¿Cuántas partes de agua se recomienda usar por cada 500 gramos de pasta?",
-                options: ["2 partes", "3 partes", "4 partes", "5 partes"],
-                correct: 2,
-                explanation: "Como guía aproximadamente se debe contar 4 partes de agua y una cucharada de sal por cada 500 gramos de pasta."
+                id: 4,
+                type: 'multiple',
+                question: '¿Qué método de cocción se recomienda para pescado magro?',
+                options: ['Cocción húmeda', 'Asado sin grasa', 'Fritura profunda', 'Ahumado'],
+                correct: 0
             },
             {
-                question: "¿Qué son las pastas compuestas según su composición?",
-                options: ["Pastas con ingredientes básicos solamente", "Pastas que incluyen algún ingrediente además de los básicos", "Pastas rellenas con carne", "Pastas secas deshidratadas"],
-                correct: 1,
-                explanation: "Las pastas compuestas son aquellas que incluyen en su composición algún otro ingrediente además de los básicos (adición de gluten, soja, huevos, leche)."
+                id: 5,
+                type: 'multiple',
+                question: '¿Por qué el pescado magro es especialmente adecuado para pochar?',
+                options: ['Conserva el nivel de humedad', 'Le da más sabor', 'Lo hace más crujiente', 'Reduce el tiempo de cocción'],
+                correct: 0
             },
             {
-                question: "¿Qué tipo de pasta son los canelones y la lasagna según su forma?",
-                options: ["Pastas cortas", "Pastas largas", "Pastas planas", "Pastas simples"],
-                correct: 2,
-                explanation: "Los canelones y la lasagna se clasifican como pastas planas según su forma."
+                id: 6,
+                type: 'multiple',
+                question: 'Si se cocina pescado magro asado a la parrilla, ¿qué se debe hacer?',
+                options: ['Bañarlo con mantequilla o aceite', 'Cocinarlo sin grasa', 'Usar solo sal', 'Envolverlo en papel'],
+                correct: 0
             },
             {
-                question: "¿Cuál es el ingrediente principal del ñoqui tradicional?",
-                options: ["Ricotta", "Sémola", "Pan rallado", "Puré de patata"],
-                correct: 3,
-                explanation: "El ñoqui tradicional es una mezcla de puré de patata con harina y queso parmesano."
+                id: 7,
+                type: 'multiple',
+                question: '¿Qué métodos de cocción se sugieren para pescado graso?',
+                options: ['Métodos de cocción en seco', 'Solo pochado', 'Solo hervido', 'Cocción húmeda exclusivamente'],
+                correct: 0
             },
             {
-                question: "¿Qué sucede con las pastas si están demasiado cocidas?",
-                options: ["Se vuelven más nutritivas", "Pierden consistencia y su digestión es más lenta", "Absorben mejor las salsas", "Se conservan mejor"],
-                correct: 1,
-                explanation: "Si las pastas están demasiado cocidas, pierden consistencia, su sabor no se fusiona tan fácilmente con las salsas y la digestión resulta más lenta."
+                id: 8,
+                type: 'multiple',
+                question: '¿Por qué el calor seco es adecuado para pescado graso?',
+                options: ['Ayuda a eliminar el exceso de grasa', 'Lo hace más jugoso', 'Le da color blanco', 'Reduce el tiempo de cocción'],
+                correct: 0
             },
             {
-                question: "¿Cómo se llaman los ñoquis que se hacen con pan rallado?",
-                options: ["Gnocchi di pane", "Gnocchi alla romana", "Gnocchi di ricotta", "Gnocchi tradizionale"],
-                correct: 0,
-                explanation: "Los gnocchi di pane son una variedad que se hace con pan rallado, conocida en las regiones de Friuli y Trentino-Alto Adigio."
+                id: 9,
+                type: 'multiple',
+                question: '¿Qué son los filetes de pescado?',
+                options: ['Cortes a ambos lados del pescado', 'Solo la cola', 'La cabeza del pescado', 'Las aletas'],
+                correct: 0
             },
             {
-                question: "¿Por qué es importante consumir la pasta inmediatamente después de su preparación?",
-                options: ["Por su mejor sabor únicamente", "Para garantizar su seguridad y mantener condiciones organolépticas óptimas", "Para ahorrar energía", "Para que no se enfríe"],
-                correct: 1,
-                explanation: "Es importante consumir la pasta inmediatamente para garantizar su seguridad alimentaria y mantener las condiciones organolépticas óptimas."
+                id: 10,
+                type: 'multiple',
+                question: '¿Qué son las porciones o trozos de pescado?',
+                options: ['Filetes de la sección transversal sin huesos', 'Pescado entero', 'Solo la piel', 'Las vísceras'],
+                correct: 0
             },
             {
-                question: "¿Cuál es la diferencia principal entre pasta fresca y pasta seca?",
-                options: ["El color", "La pasta fresca lleva huevos y la seca no", "El tiempo de conservación", "El país de origen"],
-                correct: 1,
-                explanation: "La pasta fresca se elabora con harina de trigo, huevos y sal, mientras que la pasta seca se elabora con sémola de trigo duro y agua."
+                id: 11,
+                type: 'multiple',
+                question: '¿Cuál es el primer paso en la limpieza del pescado?',
+                options: ['Retirar las escamas', 'Cortar la cabeza', 'Retirar las vísceras', 'Cortar las aletas'],
+                correct: 0
             },
             {
-                question: "¿Qué contienen las pastas rellenas en su interior?",
-                options: ["Solo verduras", "Carnes, grasas, quesos, pescados, hortalizas, huevos y aromas", "Únicamente quesos", "Solo carnes"],
-                correct: 1,
-                explanation: "Las pastas rellenas contienen en su interior un preparado elaborado con: carnes, grasas animales, grasas vegetales, quesos, pescados, hortalizas, huevos y aromas."
+                id: 12,
+                type: 'multiple',
+                question: '¿Con qué se retiran las aletas del pescado?',
+                options: ['Tijeras de cocina', 'Cuchillo de sierra', 'Las manos', 'Un tenedor'],
+                correct: 0
             },
             {
-                question: "¿Qué ejemplos se mencionan de pastas cortas?",
-                options: ["Espagueti y tallarín", "Farfalle, ravioli, tortellini, fusilli", "Canelones y lasagna", "Solo estrellitas"],
-                correct: 1,
-                explanation: "Las pastas cortas incluyen figuradas como el farfalle, rellenas como el ravioli, tortellini, y otras espirales como el fusilli."
+                id: 13,
+                type: 'multiple',
+                question: '¿Por dónde se corta para retirar las vísceras?',
+                options: ['Por el vientre', 'Por la espalda', 'Por la cola', 'Por la cabeza'],
+                correct: 0
             },
             {
-                question: "¿Qué se debe hacer si se trata de pasta fresca rellena durante la cocción?",
-                options: ["Cocinar a fuego alto", "Bajar el fuego para que el agua no retome el hervor", "Añadir más sal", "Cocinar tapada"],
-                correct: 1,
-                explanation: "Si se trata de pasta fresca rellena, hay que bajar el fuego para que el agua no retome el hervor, si no se podrían abrir las piezas o romper."
+                id: 14,
+                type: 'multiple',
+                question: '¿Qué tipo de cuchillo se usa para filetear pescado plano?',
+                options: ['De hoja fina, flexible y bien afilado', 'De sierra gruesa', 'Cuchillo de pan', 'Cuchillo de chef'],
+                correct: 0
             },
             {
-                question: "¿Qué tratamiento térmico elimina los microorganismos de la pasta?",
-                options: ["El refrigerado", "La congelación", "La cocción", "El secado"],
-                correct: 2,
-                explanation: "La cocción, o lo que es lo mismo, el tratamiento térmico de la pasta, elimina una parte muy significativa de los microorganismos que pudiera contener."
+                id: 15,
+                type: 'multiple',
+                question: '¿Dónde se corta primero al filetear pescado plano?',
+                options: ['Justo atrás de las agallas', 'En la cola', 'En el centro', 'En las aletas'],
+                correct: 0
             },
             {
-                question: "¿Con qué se elaboran los ñoquis a la romana?",
-                options: ["Puré de patata", "Ricotta", "Sémola", "Pan rallado"],
-                correct: 2,
-                explanation: "Los ñoquis a la romana se hacen con sémola y tienen forma de discos gruesos."
+                id: 16,
+                type: 'multiple',
+                question: '¿Qué son los peces anádromos?',
+                options: ['Viven en agua salada pero se reproducen en agua dulce', 'Viven solo en agua dulce', 'Viven solo en agua salada', 'No migran nunca'],
+                correct: 0
             },
             {
-                question: "¿Qué características tiene la pasta fresca respecto al peso?",
-                options: ["Pesa menos que la seca", "Pesa más porque contiene agua", "Pesa igual que la seca", "Depende del tipo"],
-                correct: 1,
-                explanation: "A la hora de calcular las cantidades de pasta fresca hay que tener en cuenta que esta variedad contiene agua, por tanto pesa más y no se hincha tanto como la pasta seca."
+                id: 17,
+                type: 'multiple',
+                question: '¿Qué es un ejemplo de pez anádromo?',
+                options: ['Salmón', 'Anguila', 'Tilapia', 'Bagre'],
+                correct: 0
             },
             {
-                question: "¿Qué ejemplos se dan de pastas largas?",
-                options: ["Farfalle y ravioli", "Espagueti, tallarín, fetuchini, tagliatelle", "Canelones y lasagna", "Estrellitas y puntos"],
-                correct: 1,
-                explanation: "Las pastas largas incluyen cilíndricas como el espagueti y planas como el tallarín, fetuchini, tagliatelle."
+                id: 18,
+                type: 'multiple',
+                question: '¿Qué son los peces catádromos?',
+                options: ['Viven en agua dulce pero se reproducen en agua salada', 'Viven en agua salada solamente', 'No se reproducen', 'Viven en lagos únicamente'],
+                correct: 0
             },
             {
-                question: "¿Qué sucede con el recalentamiento de la pasta tras su refrigeración?",
-                options: ["Mejora su sabor", "Provoca la pérdida de hidratos de carbono", "La hace más nutritiva", "No tiene efectos"],
-                correct: 1,
-                explanation: "El recalentamiento de la pasta tras su refrigeración provoca la pérdida de hidratos de carbono y, por tanto, de parte de la energía que aporta al organismo."
+                id: 19,
+                type: 'multiple',
+                question: '¿Qué ejemplo de pez catádromo se menciona?',
+                options: ['Anguila', 'Salmón', 'Trucha', 'Bacalao'],
+                correct: 0
             },
             {
-                question: "¿Qué características tienen las pastas simples según su composición?",
-                options: ["Tienen relleno", "Incluyen ingredientes adicionales", "Emplean ingredientes básicos, las de trigos duros son de calidad superior", "Son siempre secas"],
-                correct: 2,
-                explanation: "Las pastas simples son aquellas en las que se emplean los ingredientes básicos en su composición, las elaboradas con trigos duros son de calidad superior."
+                id: 20,
+                type: 'multiple',
+                question: '¿Cómo es la carne de los peces planos?',
+                options: ['Magra, blanca y de sabor suave', 'Grasa y oscura', 'Roja y fuerte', 'Amarilla y amarga'],
+                correct: 0
             },
             {
-                question: "¿Qué se debe hacer para evitar que la pasta se pegue después de colarla?",
-                options: ["Añadir mantequilla", "Refrescar con agua y añadir aceite de oliva", "Dejarla secar", "Añadir sal"],
-                correct: 1,
-                explanation: "Para evitar que se pegue, se refresca con un colador bajo el chorro de agua (choque térmico), se vierte en un bowl y se coloca aceite de oliva para evitar que se pegue."
+                id: 21,
+                type: 'multiple',
+                question: '¿Dónde tienen los ojos los peces planos?',
+                options: ['En el mismo lado de la cabeza', 'Uno a cada lado', 'No tienen ojos', 'En la cola'],
+                correct: 0
             },
             {
-                question: "¿Qué ejemplos se mencionan de pastas simples por forma?",
-                options: ["Espagueti y tallarín", "Estrellitas, letritas, puntos y granitos de arroz", "Farfalle y fusilli", "Canelones y lasagna"],
-                correct: 1,
-                explanation: "Las pastas simples por forma incluyen estrellitas, letritas, puntos y granitos de arroz."
+                id: 22,
+                type: 'multiple',
+                question: '¿Cuál es un ejemplo de pez plano?',
+                options: ['Lenguado', 'Bacalao', 'Atún', 'Tilapia'],
+                correct: 0
             },
             {
-                question: "¿Cuál es la característica principal de la dieta mediterránea mencionada?",
-                options: ["Está pasada de moda", "Está de moda y la pasta es uno de sus productos estrella", "Solo incluye pasta", "Es muy cara"],
-                correct: 1,
-                explanation: "La dieta mediterránea está de moda y uno de los productos estrella de ésta, y mundialmente conocido, es la pasta."
+                id: 23,
+                type: 'multiple',
+                question: '¿A qué temperatura debe almacenarse el pescado?',
+                options: ['4-5°C', '10-12°C', '0-1°C', '8-10°C'],
+                correct: 0
             },
             {
-                question: "¿En qué regiones de Italia son conocidos los gnocchi di pane?",
-                options: ["Sicilia y Calabria", "Friuli y Trentino-Alto Adigio", "Toscana y Umbría", "Lazio y Campania"],
-                correct: 1,
-                explanation: "Los gnocchi di pane son una variedad muy conocida en las regiones de Friuli (Venecia) y Trentino-Alto Adigio (Norte de Italia)."
+                id: 24,
+                type: 'multiple',
+                question: '¿Cómo deben ser las escamas de un pescado fresco?',
+                options: ['Claras y con brillo', 'Opacas y secas', 'Oscuras y pegajosas', 'Desprendidas'],
+                correct: 0
             },
             {
-                question: "¿Qué aumenta proporcionalmente si se deja enfriar la pasta durante mucho tiempo?",
-                options: ["Su sabor", "Las posibilidades de recontaminación del alimento", "Su valor nutritivo", "Su textura"],
-                correct: 1,
-                explanation: "Si el tiempo de enfriamiento es excesivo, las posibilidades de recontaminación del alimento aumentan de forma proporcional, ya que la velocidad de reproducción de los microorganismos se incrementa exponencialmente."
+                id: 25,
+                type: 'multiple',
+                question: '¿Cómo deben estar las aletas de un pescado fresco?',
+                options: ['Húmedas y flexibles', 'Secas y rígidas', 'Rotas', 'Pegajosas'],
+                correct: 0
+            },
+            {
+                id: 26,
+                type: 'multiple',
+                question: '¿Cómo deben ser los ojos de un pescado fresco?',
+                options: ['Claros, brillantes y abultados', 'Hundidos y opacos', 'Cerrados', 'Grises'],
+                correct: 0
+            },
+            {
+                id: 27,
+                type: 'multiple',
+                question: '¿De qué color deben ser las agallas de un pescado fresco?',
+                options: ['Rojo claro', 'Grises', 'Marrones', 'Negras'],
+                correct: 0
+            },
+            {
+                id: 28,
+                type: 'multiple',
+                question: '¿Cómo debe ser la textura de la carne de pescado fresco?',
+                options: ['Firme al tacto', 'Blanda y pegajosa', 'Dura como piedra', 'Líquida'],
+                correct: 0
+            },
+            {
+                id: 29,
+                type: 'multiple',
+                question: '¿Cuántos grupos de mariscos hay?',
+                options: ['Dos: moluscos y crustáceos', 'Tres', 'Cuatro', 'Cinco'],
+                correct: 0
+            },
+            {
+                id: 30,
+                type: 'multiple',
+                question: '¿Qué son los moluscos bivalvos?',
+                options: ['Poseen un par de conchas de bisagra', 'Tienen una sola concha', 'No tienen concha', 'Tienen tentáculos'],
+                correct: 0
+            },
+            {
+                id: 31,
+                type: 'multiple',
+                question: '¿Qué es un ejemplo de molusco bivalvo?',
+                options: ['Almeja', 'Caracol', 'Pulpo', 'Langosta'],
+                correct: 0
+            },
+            {
+                id: 32,
+                type: 'multiple',
+                question: '¿Qué son los moluscos univalvos?',
+                options: ['Tienen un único caparazón', 'Tienen dos conchas', 'No tienen concha', 'Tienen ocho patas'],
+                correct: 0
+            },
+            {
+                id: 33,
+                type: 'multiple',
+                question: '¿Qué son los cefalópodos?',
+                options: ['Moluscos con tentáculos adheridos a la cabeza', 'Crustáceos con pinzas', 'Peces con aletas', 'Bivalvos grandes'],
+                correct: 0
+            },
+            {
+                id: 34,
+                type: 'multiple',
+                question: '¿Qué significa "cefalópodo"?',
+                options: ['Cabeza-pies', 'Ocho patas', 'Dos conchas', 'Sin pies'],
+                correct: 0
+            },
+            {
+                id: 35,
+                type: 'multiple',
+                question: '¿Cómo se llama el calamar en los menús italianos?',
+                options: ['Calamari', 'Polpo', 'Vongole', 'Gamberi'],
+                correct: 0
+            },
+            {
+                id: 36,
+                type: 'multiple',
+                question: '¿Qué significa "octopus"?',
+                options: ['Ocho pies', 'Diez pies', 'Seis pies', 'Cuatro pies'],
+                correct: 0
+            },
+            {
+                id: 37,
+                type: 'multiple',
+                question: '¿Cuántos tentáculos tiene el calamar?',
+                options: ['10 tentáculos', '8 tentáculos', '6 tentáculos', '12 tentáculos'],
+                correct: 0
+            },
+            {
+                id: 38,
+                type: 'multiple',
+                question: '¿Qué se debe retirar del calamar antes de cocinarlo?',
+                options: ['La piel, el pico y la columna vertebral en forma de pluma', 'Solo las patas', 'Solo la cabeza', 'Nada, se cocina entero'],
+                correct: 0
+            },
+            {
+                id: 39,
+                type: 'multiple',
+                question: '¿Cuánto tiempo se cocina el calamar a fuego lento (simmer)?',
+                options: ['Alrededor de 45 minutos', '5 minutos', '2 horas', '10 minutos'],
+                correct: 0
+            },
+            {
+                id: 40,
+                type: 'multiple',
+                question: '¿Por qué el pulpo requiere ablandamiento mecánico?',
+                options: ['Debido a su textura firme', 'Porque es muy pequeño', 'Porque tiene mucha grasa', 'Porque es muy suave'],
+                correct: 0
+            },
+            {
+                id: 41,
+                type: 'multiple',
+                question: '¿Cuál es la almeja más pequeña y tierna?',
+                options: ['Littlenecks', 'Cherrystones', 'Chowders', 'Longnecks'],
+                correct: 0
+            },
+            {
+                id: 42,
+                type: 'multiple',
+                question: '¿Qué almejas son las más utilizadas en sopas y frituras?',
+                options: ['Chowders', 'Littlenecks', 'Cherrystones', 'Berberechos'],
+                correct: 0
+            },
+            {
+                id: 43,
+                type: 'multiple',
+                question: '¿Por qué se llaman "longnecks" algunas almejas?',
+                options: ['Tienen una protuberancia larga en medio de las valvas', 'Son muy grandes', 'Viven en aguas profundas', 'Tienen sabor fuerte'],
+                correct: 0
+            },
+            {
+                id: 44,
+                type: 'multiple',
+                question: '¿De qué color es el mejillón común?',
+                options: ['Oscuro, azul negro', 'Blanco', 'Rojo', 'Verde claro'],
+                correct: 0
+            },
+            {
+                id: 45,
+                type: 'multiple',
+                question: '¿De qué color es la carne del mejillón cuando está cocida?',
+                options: ['Amarilla a naranja', 'Blanca', 'Roja', 'Verde'],
+                correct: 0
+            },
+            {
+                id: 46,
+                type: 'multiple',
+                question: '¿De dónde es originario el mejillón verde?',
+                options: ['Nueva Zelanda y Asia del Sur', 'Europa', 'América del Norte', 'África'],
+                correct: 0
+            },
+            {
+                id: 47,
+                type: 'multiple',
+                question: '¿De qué color es la cáscara de la langosta del norte antes de cocinarla?',
+                options: ['Verde oscuro o azulado', 'Roja', 'Naranja', 'Blanca'],
+                correct: 0
+            },
+            {
+                id: 48,
+                type: 'multiple',
+                question: '¿Cuántas tenazas grandes tiene la langosta?',
+                options: ['Dos', 'Cuatro', 'Seis', 'Ocho'],
+                correct: 0
+            },
+            {
+                id: 49,
+                type: 'multiple',
+                question: '¿Cuántos gramos de carne aporta una langosta de 16 onzas cocida?',
+                options: ['Hasta 113 gramos', '50 gramos', '200 gramos', '300 gramos'],
+                correct: 0
+            },
+            {
+                id: 50,
+                type: 'multiple',
+                question: '¿Cómo se diferencian las langostas hembras de los machos?',
+                options: ['Las hembras tienen pleópodos suaves y flexibles', 'Las hembras son más grandes', 'Los machos son rojos', 'Las hembras no tienen tenazas'],
+                correct: 0
+            },
+            {
+                id: 51,
+                type: 'multiple',
+                question: '¿A qué temperatura debe estar el aceite para freír pescado?',
+                options: ['180°C a 200°C', '100°C a 120°C', '250°C a 300°C', '50°C a 80°C'],
+                correct: 0
+            },
+            {
+                id: 52,
+                type: 'multiple',
+                question: '¿Para qué sirve el rebozado en la fritura de pescado?',
+                options: ['Para proteger la pieza de la grasa', 'Para darle color', 'Para que sea más saludable', 'Para reducir calorías'],
+                correct: 0
+            },
+            {
+                id: 53,
+                type: 'multiple',
+                question: '¿Qué método se llama "a la Meunière"?',
+                options: ['Un método clásico para saltear pescado', 'Un método de horneado', 'Una forma de fritura', 'Una técnica de pochado'],
+                correct: 0
+            },
+            {
+                id: 54,
+                type: 'multiple',
+                question: '¿Qué significa "court bouillon"?',
+                options: ['Caldo corto', 'Caldo largo', 'Agua hirviendo', 'Salsa espesa'],
+                correct: 0
+            },
+            {
+                id: 55,
+                type: 'multiple',
+                question: '¿Qué ingredientes lleva típicamente un court bouillon?',
+                options: ['Agua, condimentos, hierbas y un ácido', 'Solo agua y sal', 'Leche y mantequilla', 'Vino tinto y carne'],
+                correct: 0
+            },
+            {
+                id: 56,
+                type: 'multiple',
+                question: '¿Qué son los "paupiettes"?',
+                options: ['Filetes de lenguado enrollados', 'Camarones empanados', 'Almejas al vapor', 'Langosta asada'],
+                correct: 0
+            },
+            {
+                id: 57,
+                type: 'multiple',
+                question: '¿Qué significa "en papillote"?',
+                options: ['En papel', 'Al vapor', 'A la parrilla', 'Frito'],
+                correct: 0
+            },
+            {
+                id: 58,
+                type: 'multiple',
+                question: '¿Cuál es el propósito de cocinar en papillote?',
+                options: ['Incrementar el sabor atrapando el vapor', 'Dar color dorado', 'Hacer el pescado crujiente', 'Reducir grasa'],
+                correct: 0
+            },
+            {
+                id: 59,
+                type: 'multiple',
+                question: '¿Cuándo se debe abrir el papel en la cocción en papillote?',
+                options: ['Delante de los clientes', 'En la cocina antes de servir', 'Nunca se abre', 'Después de enfriar'],
+                correct: 0
+            },
+            {
+                id: 60,
+                type: 'multiple',
+                question: '¿Qué es el "fish tartare"?',
+                options: ['Pescado picado crudo mezclado con condimentos', 'Pescado cocido al vapor', 'Pescado ahumado', 'Pescado horneado'],
+                correct: 0
+            },
+            // Preguntas Verdadero/Falso
+            {
+                id: 61,
+                type: 'boolean',
+                question: 'El pez es un animal vertebrado acuático.',
+                correct: true
+            },
+            {
+                id: 62,
+                type: 'boolean',
+                question: 'El término "pescado" se refiere al pez vivo en el agua.',
+                correct: false
+            },
+            {
+                id: 63,
+                type: 'boolean',
+                question: 'El pescado tiene abundante tejido conectivo.',
+                correct: false
+            },
+            {
+                id: 64,
+                type: 'boolean',
+                question: 'El pescado cocido es muy frágil y debe manipularse con cuidado.',
+                correct: true
+            },
+            {
+                id: 65,
+                type: 'boolean',
+                question: 'Cuando el pescado está cocido, la carne se separa fácilmente del hueso.',
+                correct: true
+            },
+            {
+                id: 66,
+                type: 'boolean',
+                question: 'El abuso en la cocción deshidrata el pescado magro.',
+                correct: true
+            },
+            {
+                id: 67,
+                type: 'boolean',
+                question: 'Los pescados magros se pueden freír o saltear.',
+                correct: true
+            },
+            {
+                id: 68,
+                type: 'boolean',
+                question: 'Los pescados absorben el sabor de la grasa utilizada en la cocción.',
+                correct: true
+            },
+            {
+                id: 69,
+                type: 'boolean',
+                question: 'Los pescados grasos no se pueden cocinar al vapor.',
+                correct: false
+            },
+            {
+                id: 70,
+                type: 'boolean',
+                question: 'El pescado graso se puede cocinar en su misma grasa.',
+                correct: true
+            },
+            {
+                id: 71,
+                type: 'boolean',
+                question: 'Las escamas se deben retirar con cuidado de no dañar la piel.',
+                correct: true
+            },
+            {
+                id: 72,
+                type: 'boolean',
+                question: 'La cabeza del pescado se corta a través de la carne justo detrás de las branquias.',
+                correct: true
+            },
+            {
+                id: 73,
+                type: 'boolean',
+                question: 'El salmón vive en agua dulce exclusivamente.',
+                correct: false
+            },
+            {
+                id: 74,
+                type: 'boolean',
+                question: 'El salmón migra río arriba para desovar.',
+                correct: true
+            },
+            {
+                id: 75,
+                type: 'boolean',
+                question: 'La trucha alpina es un ejemplo de pez anádromo.',
+                correct: true
+            },
+            {
+                id: 76,
+                type: 'boolean',
+                question: 'Los peces planos tienen los ojos uno a cada lado de la cabeza.',
+                correct: false
+            },
+            {
+                id: 77,
+                type: 'boolean',
+                question: 'El rodaballo es un ejemplo de pez plano.',
+                correct: true
+            },
+            {
+                id: 78,
+                type: 'boolean',
+                question: 'El bacalao es un pez plano.',
+                correct: false
+            },
+            {
+                id: 79,
+                type: 'boolean',
+                question: 'La tilapia es un ejemplo de pez de agua salada redondo.',
+                correct: true
+            },
+            {
+                id: 80,
+                type: 'boolean',
+                question: 'Las agallas de un pescado fresco deben estar sin viscosidad.',
+                correct: true
+            },
+            {
+                id: 81,
+                type: 'boolean',
+                question: 'El vientre del pescado fresco debe tener color natural, rosado o rojo a lo largo del espinazo.',
+                correct: true
+            },
+            {
+                id: 82,
+                type: 'boolean',
+                question: 'Los crustáceos son animales de textura suave.',
+                correct: false
+            },
+            {
+                id: 83,
+                type: 'boolean',
+                question: 'Los crustáceos tienen caparazones segmentados y patas articuladas.',
+                correct: true
+            },
+            {
+                id: 84,
+                type: 'boolean',
+                question: 'Las ostras son moluscos bivalvos.',
+                correct: true
+            },
+            {
+                id: 85,
+                type: 'boolean',
+                question: 'El pulpo tiene diez tentáculos.',
+                correct: false
+            },
+            {
+                id: 86,
+                type: 'boolean',
+                question: 'Los cefalópodos tienen concha externa.',
+                correct: false
+            },
+            {
+                id: 87,
+                type: 'boolean',
+                question: 'Solo los tentáculos y el cuerpo del calamar son comestibles.',
+                correct: true
+            },
+            {
+                id: 88,
+                type: 'boolean',
+                question: 'Los calamares pequeños son demasiado duros para comer.',
+                correct: false
+            },
+            {
+                id: 89,
+                type: 'boolean',
+                question: 'Las almejas Littlenecks son las más grandes.',
+                correct: false
+            },
+            {
+                id: 90,
+                type: 'boolean',
+                question: 'Las almejas Cherrystones se pueden comer crudas.',
+                correct: true
+            },
+            {
+                id: 91,
+                type: 'boolean',
+                question: 'Los berberechos son realmente almejas de la misma familia.',
+                correct: false
+            },
+            {
+                id: 92,
+                type: 'boolean',
+                question: 'La cáscara de la langosta se vuelve roja cuando se cocina.',
+                correct: true
+            },
+            {
+                id: 93,
+                type: 'boolean',
+                question: 'El coral de la langosta es de color rojo en crudo.',
+                correct: false
+            },
+            {
+                id: 94,
+                type: 'boolean',
+                question: 'La temperatura núcleo de cocción de la mayoría de pescados debe ser 145°F.',
+                correct: true
+            },
+            {
+                id: 95,
+                type: 'boolean',
+                question: 'Se debe cubrir completamente el pescado a la parrilla con la salsa antes de servir.',
+                correct: false
+            },
+            {
+                id: 96,
+                type: 'boolean',
+                question: 'El pochado es la cocción en un líquido a fuego muy bajo.',
+                correct: true
+            },
+            {
+                id: 97,
+                type: 'boolean',
+                question: 'En la técnica "étuver" se añade abundante líquido que cubra completamente el elemento.',
+                correct: false
+            },
+            {
+                id: 98,
+                type: 'boolean',
+                question: 'El tataki es una técnica donde la proteína se cocina brevemente.',
+                correct: true
+            },
+            {
+                id: 99,
+                type: 'boolean',
+                question: 'El carpaccio consiste en rebanadas gruesas de pescado.',
+                correct: false
+            },
+            {
+                id: 100,
+                type: 'boolean',
+                question: 'En el ceviche, la acidez coagula las proteínas del pescado crudo.',
+                correct: true
             }
         ];
 
+        // Función para mezclar array (Fisher-Yates shuffle)
+        function shuffleArray(array) {
+            const newArray = [...array];
+            for (let i = newArray.length - 1; i > 0; i--) {
+                const j = Math.floor(Math.random() * (i + 1));
+                [newArray[i], newArray[j]] = [newArray[j], newArray[i]];
+            }
+            return newArray;
+        }
+
+        // Mezclar preguntas y opciones
+        function prepareQuestions() {
+            const shuffled = shuffleArray(allQuestions);
+            return shuffled.map(q => {
+                if (q.type === 'multiple') {
+                    const shuffledOptions = shuffleArray(q.options.map((opt, idx) => ({ text: opt, index: idx })));
+                    return {
+                        ...q,
+                        shuffledOptions: shuffledOptions,
+                        newCorrect: shuffledOptions.findIndex(opt => opt.index === q.correct)
+                    };
+                }
+                return q;
+            });
+        }
+
+        let questions = prepareQuestions();
         let currentQuestion = 0;
-        let score = 0;
-        let timeLeft = QUESTION_TIME_SECONDS; // Usar la constante configurada
-        let timer;
-        let answered = false;
-        let isMuted = !AUDIO_ENABLED_BY_DEFAULT; // Usar configuración por defecto
-        let synth;
-        let oscillator;
-        let quizStarted = false;
+        let answers = {};
+        let showResults = false;
 
-        // Función para probar el audio desde la pantalla de inicio
-        async function testAudio() {
-            if (!synth) {
-                await initAudio();
-            }
-            playTickSound();
-        }
-
-        // Función para iniciar el quiz
-        function startQuiz() {
-            quizStarted = true;
-            document.getElementById('startScreen').style.display = 'none';
-            document.getElementById('quizContent').style.display = 'block';
-            document.querySelector('.timer-container').style.display = 'flex';
-            document.querySelector('.progress-bar').style.display = 'block';
+        function render() {
+            const testCard = document.getElementById('testCard');
             
-            loadQuestion();
-        }
-
-        // Inicializar Tone.js
-        async function initAudio() {
-            if (Tone.context.state !== 'running') {
-                await Tone.start();
-            }
-            
-            synth = new Tone.Synth({
-                oscillator: {
-                    type: 'sine'
-                },
-                envelope: {
-                    attack: 0.1,
-                    decay: 0.2,
-                    sustain: 0.3,
-                    release: 0.4
-                }
-            }).toDestination();
-        }
-
-        function playTickSound() {
-            if (!isMuted && synth) {
-                synth.triggerAttackRelease('C4', '0.1');
-            }
-        }
-
-        function playCorrectSound() {
-            if (!isMuted && synth) {
-                synth.triggerAttackRelease('C5', '0.3');
-                setTimeout(() => synth.triggerAttackRelease('E5', '0.3'), 150);
-                setTimeout(() => synth.triggerAttackRelease('G5', '0.3'), 300);
-            }
-        }
-
-        function playIncorrectSound() {
-            if (!isMuted && synth) {
-                synth.triggerAttackRelease('F3', '0.5');
-                setTimeout(() => synth.triggerAttackRelease('D3', '0.5'), 200);
-            }
-        }
-
-        function playTimeUpSound() {
-            if (!isMuted && synth) {
-                for (let i = 0; i < 3; i++) {
-                    setTimeout(() => synth.triggerAttackRelease('A3', '0.2'), i * 300);
-                }
-            }
-        }
-
-        function playWarningSound() {
-            if (!isMuted && synth && timeLeft <= WARNING_TIME_THRESHOLD) {
-                synth.triggerAttackRelease('G4', '0.1');
-            }
-        }
-
-        function toggleMute() {
-            isMuted = !isMuted;
-            document.getElementById('muteBtn').textContent = isMuted ? '🔇 Silencio' : '🔊 Audio';
-        }
-
-        function startTimer() {
-            timeLeft = QUESTION_TIME_SECONDS; // Usar la constante configurada
-            updateTimerDisplay();
-            
-            timer = setInterval(() => {
-                timeLeft--;
-                updateTimerDisplay();
-                
-                if (timeLeft <= WARNING_TIME_THRESHOLD && timeLeft > 0) {
-                    playWarningSound();
-                    document.getElementById('timer').classList.add('warning');
-                }
-                
-                if (timeLeft === 0) {
-                    clearInterval(timer);
-                    timeUp();
-                }
-            }, 1000);
-        }
-
-        function updateTimerDisplay() {
-            const timerElement = document.getElementById('timer');
-            timerElement.textContent = timeLeft;
-            
-            if (timeLeft > WARNING_TIME_THRESHOLD) {
-                timerElement.classList.remove('warning');
-            }
-        }
-
-        function timeUp() {
-            if (answered) return;
-            
-            playTimeUpSound();
-            answered = true;
-            
-            const question = questions[currentQuestion];
-            const options = document.querySelectorAll('.option');
-            
-            options.forEach((option, index) => {
-                option.classList.add('disabled');
-                if (index === question.correct) {
-                    option.classList.add('correct');
-                }
-            });
-            
-            document.getElementById('timeUpMessage').style.display = 'block';
-            document.getElementById('explanation').textContent = question.explanation;
-            document.getElementById('explanation').classList.add('show');
-            document.getElementById('nextBtn').disabled = false;
-            
-            updateScore();
-        }
-
-        function loadQuestion() {
-            const question = questions[currentQuestion];
-            document.getElementById('questionNumber').textContent = `Pregunta ${currentQuestion + 1} de ${questions.length}`;
-            document.getElementById('questionText').textContent = question.question;
-            
-            const optionsContainer = document.getElementById('optionsContainer');
-            optionsContainer.innerHTML = '';
-            
-            question.options.forEach((option, index) => {
-                const optionElement = document.createElement('div');
-                optionElement.className = 'option';
-                optionElement.textContent = option;
-                optionElement.onclick = () => selectOption(index);
-                optionsContainer.appendChild(optionElement);
-            });
-            
-            document.getElementById('explanation').classList.remove('show');
-            document.getElementById('timeUpMessage').style.display = 'none';
-            document.getElementById('nextBtn').disabled = true;
-            answered = false;
-            
-            updateProgress();
-            updateScore();
-            startTimer();
-        }
-
-        function selectOption(selectedIndex) {
-            if (answered) return;
-            
-            clearInterval(timer);
-            const question = questions[currentQuestion];
-            const options = document.querySelectorAll('.option');
-            
-            answered = true;
-            
-            options.forEach((option, index) => {
-                option.classList.add('disabled');
-                if (index === question.correct) {
-                    option.classList.add('correct');
-                } else if (index === selectedIndex && selectedIndex !== question.correct) {
-                    option.classList.add('incorrect');
-                }
-            });
-            
-            if (selectedIndex === question.correct) {
-                score++;
-                playCorrectSound();
+            if (showResults) {
+                renderResults();
             } else {
-                playIncorrectSound();
+                renderQuestion();
             }
-            
-            document.getElementById('explanation').textContent = question.explanation;
-            document.getElementById('explanation').classList.add('show');
-            document.getElementById('nextBtn').disabled = false;
-            
-            updateScore();
+        }
+
+        function renderQuestion() {
+            const q = questions[currentQuestion];
+            const progress = ((currentQuestion + 1) / questions.length) * 100;
+            const answeredCount = Object.keys(answers).length;
+
+            const optionsHTML = q.type === 'multiple' 
+                ? q.shuffledOptions.map((opt, idx) => `
+                    <div class="option ${answers[currentQuestion] === idx ? 'selected' : ''}" 
+                         onclick="selectAnswer(${idx})">
+                        <strong>${String.fromCharCode(65 + idx)}.</strong> ${opt.text}
+                    </div>
+                `).join('')
+                : `
+                    <div class="boolean-options">
+                        <div class="option true ${answers[currentQuestion] === true ? 'selected' : ''}" 
+                             onclick="selectAnswer(true)">
+                            Verdadero
+                        </div>
+                        <div class="option false ${answers[currentQuestion] === false ? 'selected' : ''}" 
+                             onclick="selectAnswer(false)">
+                            Falso
+                        </div>
+                    </div>
+                `;
+
+            const navigationHTML = currentQuestion === questions.length - 1
+                ? `<button class="btn btn-finish" onclick="finishTest()" ${answeredCount !== questions.length ? 'disabled' : ''}>
+                       Finalizar Test
+                   </button>`
+                : `<button class="btn btn-next" onclick="nextQuestion()">
+                       Siguiente →
+                   </button>`;
+
+            document.getElementById('testCard').innerHTML = `
+                <div class="header">
+                    <h1>Test de Pescados y Mariscos</h1>
+                    <p>Pregunta ${currentQuestion + 1} de ${questions.length}</p>
+                </div>
+                <div class="progress-bar">
+                    <div class="progress-fill" style="width: ${progress}%"></div>
+                </div>
+                <div class="question-content">
+                    <span class="question-type ${q.type === 'multiple' ? 'type-multiple' : 'type-boolean'}">
+                        ${q.type === 'multiple' ? 'Opción Múltiple' : 'Verdadero/Falso'}
+                    </span>
+                    <h2 class="question-text">${q.question}</h2>
+                    <div class="options">
+                        ${optionsHTML}
+                    </div>
+                </div>
+                <div class="navigation">
+                    <button class="btn btn-prev" onclick="prevQuestion()" ${currentQuestion === 0 ? 'disabled' : ''}>
+                        ← Anterior
+                    </button>
+                    <span class="progress-text">${answeredCount} de ${questions.length} respondidas</span>
+                    ${navigationHTML}
+                </div>
+            `;
+        }
+
+        function renderResults() {
+            let correctCount = 0;
+            questions.forEach((q, idx) => {
+                const userAnswer = answers[idx];
+                const correctAnswer = q.type === 'multiple' ? q.newCorrect : q.correct;
+                if (userAnswer === correctAnswer) {
+                    correctCount++;
+                }
+            });
+
+            const percentage = ((correctCount / questions.length) * 100).toFixed(1);
+            let message = '';
+            if (percentage >= 90) message = '¡Excelente trabajo! Dominas el tema.';
+            else if (percentage >= 70) message = '¡Buen trabajo! Conoces bien el material.';
+            else if (percentage >= 50) message = 'Aprobado, pero puedes mejorar.';
+            else message = 'Necesitas estudiar más el material.';
+
+            const reviewHTML = questions.map((q, idx) => {
+                const userAnswer = answers[idx];
+                const correctAnswer = q.type === 'multiple' ? q.newCorrect : q.correct;
+                const isCorrect = userAnswer === correctAnswer;
+
+                let userAnswerText, correctAnswerText;
+                if (q.type === 'multiple') {
+                    userAnswerText = q.shuffledOptions[userAnswer]?.text || 'No respondida';
+                    correctAnswerText = q.shuffledOptions[correctAnswer].text;
+                } else {
+                    userAnswerText = userAnswer ? 'Verdadero' : 'Falso';
+                    correctAnswerText = correctAnswer ? 'Verdadero' : 'Falso';
+                }
+
+                return `
+                    <div class="review-item ${isCorrect ? 'correct' : 'incorrect'}">
+                        <div class="review-question">
+                            <span class="review-icon">${isCorrect ? '✓' : '✗'}</span>
+                            <span>${idx + 1}. ${q.question}</span>
+                        </div>
+                        <div class="review-answers">
+                            <p class="user-answer"><strong>Tu respuesta:</strong> ${userAnswerText}</p>
+                            ${!isCorrect ? `<p class="correct-answer"><strong>Respuesta correcta:</strong> ${correctAnswerText}</p>` : ''}
+                        </div>
+                    </div>
+                `;
+            }).join('');
+
+            document.getElementById('testCard').innerHTML = `
+                <div class="header">
+                    <h1>Resultados del Test</h1>
+                </div>
+                <div class="results-container">
+                    <div class="score-card">
+                        <div class="score-number">${correctCount}/${questions.length}</div>
+                        <div class="score-percentage">Puntuación: ${percentage}%</div>
+                        <div class="score-message">${message}</div>
+                    </div>
+                    <div class="review-section">
+                        <h2>Revisión de Respuestas</h2>
+                        ${reviewHTML}
+                    </div>
+                    <button class="btn btn-restart" onclick="restartTest()">
+                        🔄 Reintentar Test
+                    </button>
+                </div>
+            `;
+        }
+
+        function selectAnswer(answer) {
+            answers[currentQuestion] = answer;
+            render();
         }
 
         function nextQuestion() {
-            currentQuestion++;
-            
-            if (currentQuestion < questions.length) {
-                setTimeout(() => {
-                    loadQuestion();
-                }, 500);
-            } else {
-                showResults();
+            if (currentQuestion < questions.length - 1) {
+                currentQuestion++;
+                render();
             }
         }
 
-        function updateProgress() {
-            const progress = ((currentQuestion + 1) / questions.length) * 100;
-            document.getElementById('progressFill').style.width = progress + '%';
-        }
-
-        function updateScore() {
-            document.getElementById('scoreDisplay').textContent = `Puntuación: ${score}/${currentQuestion + (answered ? 1 : 0)}`;
-        }
-
-        function showResults() {
-            document.getElementById('quizContent').style.display = 'none';
-            document.getElementById('resultsContainer').style.display = 'block';
-            
-            const percentage = Math.round((score / questions.length) * 100);
-            document.getElementById('finalScore').textContent = `${score}/${questions.length} (${percentage}%)`;
-            
-            let message = '';
-            if (percentage >= 90) {
-                message = '¡Excelente! Eres un experto en pastas 🍝👑';
-            } else if (percentage >= 80) {
-                message = '¡Muy bien! Tienes excelentes conocimientos sobre pastas 👍';
-            } else if (percentage >= 70) {
-                message = '¡Bien! Conoces bastante sobre pastas 📚';
-            } else if (percentage >= 60) {
-                message = 'No está mal, pero puedes mejorar estudiando más 📖';
-            } else if (percentage >= 50) {
-                message = 'Resultado regular, necesitas repasar el tema 🤔';
-            } else {
-                message = 'Necesitas estudiar mucho más sobre pastas 📚💪';
-            }
-            
-            document.getElementById('performanceMessage').textContent = message;
-            
-            // Sonido final
-            if (percentage >= 70) {
-                playCorrectSound();
-            } else {
-                playIncorrectSound();
+        function prevQuestion() {
+            if (currentQuestion > 0) {
+                currentQuestion--;
+                render();
             }
         }
 
-        function restartQuiz() {
+        function finishTest() {
+            if (Object.keys(answers).length === questions.length) {
+                showResults = true;
+                render();
+            }
+        }
+
+        function restartTest() {
+            questions = prepareQuestions();
             currentQuestion = 0;
-            score = 0;
-            answered = false;
-            quizStarted = false;
-            clearInterval(timer);
-            
-            // Volver a la pantalla de inicio
-            document.getElementById('startScreen').style.display = 'block';
-            document.getElementById('quizContent').style.display = 'none';
-            document.getElementById('resultsContainer').style.display = 'none';
-            document.querySelector('.timer-container').style.display = 'none';
-            document.querySelector('.progress-bar').style.display = 'none';
+            answers = {};
+            showResults = false;
+            render();
         }
 
-        // Inicializar el audio cuando se carga la página
-        window.addEventListener('load', async () => {
-            await initAudio();
-            // El quiz no se inicia automáticamente, espera a que el usuario haga clic
-        });
-
-        // Asegurar que el audio funcione en cualquier interacción del usuario
-        document.addEventListener('click', () => {
-            if (Tone.context.state !== 'running') {
-                Tone.start();
-            }
-        });
+        // Inicializar
+        render();
     </script>
 </body>
 </html>
-
-
