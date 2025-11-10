@@ -136,6 +136,54 @@
             border-color: #dc2626;
         }
 
+        .feedback-box {
+            margin-top: 25px;
+            padding: 20px;
+            border-radius: 12px;
+            font-size: 1.05em;
+            animation: slideIn 0.3s ease;
+        }
+
+        @keyframes slideIn {
+            from {
+                opacity: 0;
+                transform: translateY(-10px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .feedback-correct {
+            background: #f0fdf4;
+            border: 2px solid #86efac;
+            color: #166534;
+        }
+
+        .feedback-incorrect {
+            background: #fef2f2;
+            border: 2px solid #fca5a5;
+            color: #991b1b;
+        }
+
+        .feedback-box strong {
+            display: block;
+            font-size: 1.2em;
+            margin-bottom: 10px;
+        }
+
+        .feedback-icon {
+            font-size: 1.5em;
+            margin-right: 8px;
+        }
+
+        .correct-answer-text {
+            margin-top: 10px;
+            padding-top: 10px;
+            border-top: 1px solid rgba(0,0,0,0.1);
+        }
+
         .navigation {
             display: flex;
             justify-content: space-between;
@@ -1029,6 +1077,42 @@
             const q = questions[currentQuestion];
             const progress = ((currentQuestion + 1) / questions.length) * 100;
             const answeredCount = Object.keys(answers).length;
+            const hasAnswered = answers[currentQuestion] !== undefined;
+
+            // Verificar si la respuesta es correcta
+            let isCorrect = false;
+            let feedbackHTML = '';
+            if (hasAnswered) {
+                const userAnswer = answers[currentQuestion];
+                const correctAnswer = q.type === 'multiple' ? q.newCorrect : q.correct;
+                isCorrect = userAnswer === correctAnswer;
+
+                if (isCorrect) {
+                    feedbackHTML = `
+                        <div class="feedback-box feedback-correct">
+                            <strong><span class="feedback-icon">✓</span>¡Correcto!</strong>
+                            <p>Has respondido correctamente esta pregunta.</p>
+                        </div>
+                    `;
+                } else {
+                    let correctAnswerText;
+                    if (q.type === 'multiple') {
+                        correctAnswerText = q.shuffledOptions[correctAnswer].text;
+                    } else {
+                        correctAnswerText = correctAnswer ? 'Verdadero' : 'Falso';
+                    }
+                    
+                    feedbackHTML = `
+                        <div class="feedback-box feedback-incorrect">
+                            <strong><span class="feedback-icon">✗</span>Incorrecto</strong>
+                            <p>Tu respuesta no es correcta.</p>
+                            <div class="correct-answer-text">
+                                <strong>Respuesta correcta:</strong> ${correctAnswerText}
+                            </div>
+                        </div>
+                    `;
+                }
+            }
 
             const optionsHTML = q.type === 'multiple' 
                 ? q.shuffledOptions.map((opt, idx) => `
@@ -1074,6 +1158,7 @@
                     <div class="options">
                         ${optionsHTML}
                     </div>
+                    ${feedbackHTML}
                 </div>
                 <div class="navigation">
                     <button class="btn btn-prev" onclick="prevQuestion()" ${currentQuestion === 0 ? 'disabled' : ''}>
